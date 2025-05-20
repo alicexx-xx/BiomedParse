@@ -38,12 +38,14 @@ class LanguageEncoder(nn.Module):
         self.lang_proj = lang_projection
         self.max_token_num = max_token_num
         self.logit_scale = nn.Parameter(torch.ones([]))
+
+        hf_model_path = '/cluster/customapps/biomed/grlab/users/xueqwang/hf_models'
         
         # captioning & retrieval
         for key, value in queue_operator.items():
             self.register_buffer(key, value)
             
-        self.biomed_encoder = AutoModel.from_pretrained("microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext")
+        self.biomed_encoder = AutoModel.from_pretrained("{0}/microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext".format(hf_model_path), local_files_only=True)
 
     @classmethod
     def from_config(cls, cfg):

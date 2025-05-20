@@ -14,21 +14,22 @@ def build_lang_encoder(config_encoder, tokenizer, verbose, **kwargs):
     return lang_encoders(model_name)(config_encoder, tokenizer, verbose, **kwargs)
 
 def build_tokenizer(config_encoder):
+    hf_model_path = '/cluster/customapps/biomed/grlab/users/xueqwang/hf_models'
     tokenizer = None
     os.environ['TOKENIZERS_PARALLELISM'] = 'true'
     if config_encoder['TOKENIZER'] == 'clip':
         pretrained_tokenizer = config_encoder.get(
-            'PRETRAINED_TOKENIZER', 'openai/clip-vit-base-patch32'
+            'PRETRAINED_TOKENIZER', '{0}/openai/clip-vit-base-patch32'.format(hf_model_path)
         )
-        tokenizer = CLIPTokenizer.from_pretrained(pretrained_tokenizer)
+        tokenizer = CLIPTokenizer.from_pretrained(pretrained_tokenizer, local_files_only=True)
         tokenizer.add_special_tokens({'cls_token': tokenizer.eos_token})
     elif config_encoder['TOKENIZER'] == 'clip-fast':
         pretrained_tokenizer = config_encoder.get(
-            'PRETRAINED_TOKENIZER', 'openai/clip-vit-base-patch32'
+            'PRETRAINED_TOKENIZER', '{0}/openai/clip-vit-base-patch32'.format(hf_model_path)
         )
-        tokenizer = CLIPTokenizerFast.from_pretrained(pretrained_tokenizer, from_slow=True)
+        tokenizer = CLIPTokenizerFast.from_pretrained(pretrained_tokenizer, from_slow=True, local_files_only=True)
     elif config_encoder['TOKENIZER'] == 'biomed-clip':
-        tokenizer = AutoTokenizer.from_pretrained("microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext")
+        tokenizer = AutoTokenizer.from_pretrained("{0}/microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext".format(hf_model_path))
     else:
         tokenizer = AutoTokenizer.from_pretrained(config_encoder['TOKENIZER'])
 
