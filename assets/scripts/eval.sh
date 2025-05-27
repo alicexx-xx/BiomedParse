@@ -17,5 +17,7 @@ CUDA_VISIBLE_DEVICES=0 mpirun -n 1 python entry.py evaluate \
             FP16 True \
             WEIGHT True \
             STANDARD_TEXT_FOR_EVAL False \
-            RESUME_FROM pretrained/biomedparse_v1.pt \
+            RESUME_FROM /cluster/customapps/biomed/grlab/users/xueqwang/hf_models/microsoft/biomedparse_v1.pt \
+            SAVE_DIR /cluster/home/xueqwang/output\
+
             

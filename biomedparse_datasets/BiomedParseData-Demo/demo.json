@@ -1,3 +1,2774 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:240b6c0c387b7a0747283bf2c80e8c17801cbf964b7993ccbcd5a39016e900fd
-size 79526
+{
+    "info": {},
+    "licenses": [],
+    "images": [
+        {
+            "file_name": "00_CT_lung.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 0
+        },
+        {
+            "file_name": "01_CT_lung.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 1
+        },
+        {
+            "file_name": "02_CT_lung.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 2
+        },
+        {
+            "file_name": "03_CT_pelvis.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 3
+        },
+        {
+            "file_name": "04_CT_liver.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 4
+        },
+        {
+            "file_name": "05_CT_colon.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 5
+        },
+        {
+            "file_name": "06_CT_abdomen.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 6
+        },
+        {
+            "file_name": "07_CT_abdomen.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 7
+        },
+        {
+            "file_name": "08_MRI_heart.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 8
+        },
+        {
+            "file_name": "09_MRI-FLAIR_brain.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 9
+        },
+        {
+            "file_name": "10_MRI-T1-Gd_brain.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 10
+        },
+        {
+            "file_name": "11_MRI_heart.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 11
+        },
+        {
+            "file_name": "12_MRI_brain.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 12
+        },
+        {
+            "file_name": "13_MRI_abdomen.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 13
+        },
+        {
+            "file_name": "14_MRI_prostate.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 14
+        },
+        {
+            "file_name": "15_X-Ray_chest.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 15
+        },
+        {
+            "file_name": "16_X-Ray_chest.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 16
+        },
+        {
+            "file_name": "17_X-Ray_chest.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 17
+        },
+        {
+            "file_name": "18_pathology_colon.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 18
+        },
+        {
+            "file_name": "19_pathology_liver.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 19
+        },
+        {
+            "file_name": "20_ultrasound_breast.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 20
+        },
+        {
+            "file_name": "21_ultrasound_heart.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 21
+        },
+        {
+            "file_name": "22_ultrasound_transperineal.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 22
+        },
+        {
+            "file_name": "23_fundus_retinal.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 23
+        },
+        {
+            "file_name": "24_endoscope_colon.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 24
+        },
+        {
+            "file_name": "25_dermoscopy_skin.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 25
+        },
+        {
+            "file_name": "26_OCT_retinal.png",
+            "height": 1024,
+            "width": 1024,
+            "id": 26
+        }
+    ],
+    "categories": [
+        {
+            "supercategory": "background",
+            "id": 0,
+            "name": "background"
+        },
+        {
+            "supercategory": "liver",
+            "id": 1,
+            "name": "liver"
+        },
+        {
+            "supercategory": "lung",
+            "id": 2,
+            "name": "lung"
+        },
+        {
+            "supercategory": "kidney",
+            "id": 3,
+            "name": "kidney"
+        },
+        {
+            "supercategory": "pancreas",
+            "id": 4,
+            "name": "pancreas"
+        },
+        {
+            "supercategory": "heart anatomies",
+            "id": 5,
+            "name": "heart anatomies"
+        },
+        {
+            "supercategory": "brain anatomies",
+            "id": 6,
+            "name": "brain anatomies"
+        },
+        {
+            "supercategory": "eye anatomies",
+            "id": 7,
+            "name": "eye anatomies"
+        },
+        {
+            "supercategory": "vessel",
+            "id": 8,
+            "name": "vessel"
+        },
+        {
+            "supercategory": "other organ",
+            "id": 9,
+            "name": "other organ"
+        },
+        {
+            "supercategory": "tumor",
+            "id": 10,
+            "name": "tumor"
+        },
+        {
+            "supercategory": "infection",
+            "id": 11,
+            "name": "infection"
+        },
+        {
+            "supercategory": "lesion",
+            "id": 12,
+            "name": "lesion"
+        },
+        {
+            "supercategory": "fluid disturbance",
+            "id": 13,
+            "name": "fluid disturbance"
+        },
+        {
+            "supercategory": "other abnormality",
+            "id": 14,
+            "name": "other abnormality"
+        },
+        {
+            "supercategory": "histology structure",
+            "id": 15,
+            "name": "histology structure"
+        },
+        {
+            "supercategory": "other",
+            "id": 16,
+            "name": "other"
+        }
+    ],
+    "annotations": [
+        {
+            "mask_file": "00_CT_lung_COVID-19+infection.png",
+            "area": 6988,
+            "iscrowd": 0,
+            "image_id": 0,
+            "bbox": [
+                266,
+                304,
+                117,
+                89
+            ],
+            "category_id": 11,
+            "id": 0,
+            "slice_ratio": 0.5,
+            "file_name": "00_CT_lung.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "COVID-19 infection in lung CT",
+                    "sent": "COVID-19 infection in lung CT",
+                    "sent_id": 376
+                },
+                {
+                    "raw": "infection in lung CT",
+                    "sent": "infection in lung CT",
+                    "sent_id": 377
+                }
+            ],
+            "sent_ids": [
+                376,
+                377
+            ],
+            "ann_id": 0,
+            "ref_id": 0
+        },
+        {
+            "mask_file": "01_CT_lung_nodule.png",
+            "area": 2220,
+            "iscrowd": 0,
+            "image_id": 1,
+            "bbox": [
+                360,
+                760,
+                61,
+                55
+            ],
+            "category_id": 12,
+            "id": 1,
+            "slice_ratio": 0.9,
+            "file_name": "01_CT_lung.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "nodule",
+                    "sent": "nodule",
+                    "sent_id": 1988
+                }
+            ],
+            "sent_ids": [
+                1988
+            ],
+            "ann_id": 1,
+            "ref_id": 1
+        },
+        {
+            "mask_file": "02_CT_lung_tumor.png",
+            "area": 3680,
+            "iscrowd": 0,
+            "image_id": 2,
+            "bbox": [
+                692,
+                308,
+                81,
+                77
+            ],
+            "category_id": 10,
+            "id": 2,
+            "slice_ratio": 0.6,
+            "file_name": "02_CT_lung.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "tumor in lung CT",
+                    "sent": "tumor in lung CT",
+                    "sent_id": 220
+                }
+            ],
+            "sent_ids": [
+                220
+            ],
+            "ann_id": 2,
+            "ref_id": 2
+        },
+        {
+            "mask_file": "03_CT_pelvis_uterus.png",
+            "area": 14976,
+            "iscrowd": 0,
+            "image_id": 3,
+            "bbox": [
+                446,
+                418,
+                107,
+                163
+            ],
+            "category_id": 9,
+            "id": 3,
+            "slice_ratio": 0.8,
+            "file_name": "03_CT_pelvis.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "uterus in pelvis CT",
+                    "sent": "uterus in pelvis CT",
+                    "sent_id": 65
+                }
+            ],
+            "sent_ids": [
+                65
+            ],
+            "ann_id": 3,
+            "ref_id": 3
+        },
+        {
+            "mask_file": "04_CT_liver_vessel.png",
+            "area": 4152,
+            "iscrowd": 0,
+            "image_id": 4,
+            "bbox": [
+                590,
+                358,
+                161,
+                297
+            ],
+            "category_id": 8,
+            "id": 4,
+            "slice_ratio": 0.6,
+            "file_name": "04_CT_liver.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "Vessel delineation in hepatic computed tomography",
+                    "sent": "Vessel delineation in hepatic computed tomography",
+                    "sent_id": 440
+                },
+                {
+                    "raw": "vessel in liver CT",
+                    "sent": "vessel in liver CT",
+                    "sent_id": 441
+                },
+                {
+                    "raw": "Vessel identification in liver CT scan",
+                    "sent": "Vessel identification in liver CT scan",
+                    "sent_id": 442
+                }
+            ],
+            "sent_ids": [
+                440,
+                441,
+                442
+            ],
+            "ann_id": 4,
+            "ref_id": 4
+        },
+        {
+            "mask_file": "04_CT_liver_tumor.png",
+            "area": 2568,
+            "iscrowd": 0,
+            "image_id": 4,
+            "bbox": [
+                548,
+                640,
+                47,
+                67
+            ],
+            "category_id": 10,
+            "id": 5,
+            "slice_ratio": 1.0,
+            "file_name": "04_CT_liver.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "tumor in liver CT",
+                    "sent": "tumor in liver CT",
+                    "sent_id": 443
+                }
+            ],
+            "sent_ids": [
+                443
+            ],
+            "ann_id": 5,
+            "ref_id": 5
+        },
+        {
+            "mask_file": "05_CT_colon_tumor.png",
+            "area": 11868,
+            "iscrowd": 0,
+            "image_id": 5,
+            "bbox": [
+                596,
+                412,
+                145,
+                119
+            ],
+            "category_id": 10,
+            "id": 6,
+            "slice_ratio": 1.0,
+            "file_name": "05_CT_colon.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "carcinoma",
+                    "sent": "carcinoma",
+                    "sent_id": 392
+                },
+                {
+                    "raw": "malignant lesion",
+                    "sent": "malignant lesion",
+                    "sent_id": 393
+                },
+                {
+                    "raw": "tumor",
+                    "sent": "tumor",
+                    "sent_id": 394
+                }
+            ],
+            "sent_ids": [
+                392,
+                393,
+                394
+            ],
+            "ann_id": 6,
+            "ref_id": 6
+        },
+        {
+            "mask_file": "06_CT_abdomen_spleen.png",
+            "area": 19432,
+            "iscrowd": 0,
+            "image_id": 6,
+            "bbox": [
+                730,
+                290,
+                149,
+                207
+            ],
+            "category_id": 9,
+            "id": 7,
+            "slice_ratio": 0.6,
+            "file_name": "06_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "Spleen segmentation in abdominal computed tomography",
+                    "sent": "Spleen segmentation in abdominal computed tomography",
+                    "sent_id": 17890
+                },
+                {
+                    "raw": "spleen in abdominal CT",
+                    "sent": "spleen in abdominal CT",
+                    "sent_id": 17891
+                },
+                {
+                    "raw": "Spleen identification in CT scan of the abdomen",
+                    "sent": "Spleen identification in CT scan of the abdomen",
+                    "sent_id": 17892
+                }
+            ],
+            "sent_ids": [
+                17890,
+                17891,
+                17892
+            ],
+            "ann_id": 7,
+            "ref_id": 7
+        },
+        {
+            "mask_file": "06_CT_abdomen_right+kidney.png",
+            "area": 2460,
+            "iscrowd": 0,
+            "image_id": 6,
+            "bbox": [
+                356,
+                336,
+                53,
+                61
+            ],
+            "category_id": 3,
+            "id": 8,
+            "slice_ratio": 0.1,
+            "file_name": "06_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "right kidney in abdominal computed tomography",
+                    "sent": "right kidney in abdominal computed tomography",
+                    "sent_id": 17893
+                },
+                {
+                    "raw": "right kidney in abdominal CT",
+                    "sent": "right kidney in abdominal CT",
+                    "sent_id": 17894
+                }
+            ],
+            "sent_ids": [
+                17893,
+                17894
+            ],
+            "ann_id": 8,
+            "ref_id": 8
+        },
+        {
+            "mask_file": "06_CT_abdomen_left+kidney.png",
+            "area": 5960,
+            "iscrowd": 0,
+            "image_id": 6,
+            "bbox": [
+                608,
+                328,
+                87,
+                87
+            ],
+            "category_id": 3,
+            "id": 9,
+            "slice_ratio": 0.3,
+            "file_name": "06_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "left kidney in abdominal CT",
+                    "sent": "left kidney in abdominal CT",
+                    "sent_id": 17895
+                },
+                {
+                    "raw": "Left kidney region in an abdominal CT scan",
+                    "sent": "Left kidney region in an abdominal CT scan",
+                    "sent_id": 17896
+                },
+                {
+                    "raw": "Left renal structure in abdominal computed tomography",
+                    "sent": "Left renal structure in abdominal computed tomography",
+                    "sent_id": 17897
+                }
+            ],
+            "sent_ids": [
+                17895,
+                17896,
+                17897
+            ],
+            "ann_id": 9,
+            "ref_id": 9
+        },
+        {
+            "mask_file": "06_CT_abdomen_gallbladder.png",
+            "area": 3400,
+            "iscrowd": 0,
+            "image_id": 6,
+            "bbox": [
+                172,
+                604,
+                71,
+                67
+            ],
+            "category_id": 9,
+            "id": 10,
+            "slice_ratio": 0.2,
+            "file_name": "06_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "gallbladder in abdominal CT",
+                    "sent": "gallbladder in abdominal CT",
+                    "sent_id": 17898
+                }
+            ],
+            "sent_ids": [
+                17898
+            ],
+            "ann_id": 10,
+            "ref_id": 10
+        },
+        {
+            "mask_file": "06_CT_abdomen_liver.png",
+            "area": 53064,
+            "iscrowd": 0,
+            "image_id": 6,
+            "bbox": [
+                126,
+                260,
+                225,
+                379
+            ],
+            "category_id": 1,
+            "id": 11,
+            "slice_ratio": 0.3,
+            "file_name": "06_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "liver in abdominal CT",
+                    "sent": "liver in abdominal CT",
+                    "sent_id": 17899
+                }
+            ],
+            "sent_ids": [
+                17899
+            ],
+            "ann_id": 11,
+            "ref_id": 11
+        },
+        {
+            "mask_file": "06_CT_abdomen_stomach.png",
+            "area": 8404,
+            "iscrowd": 0,
+            "image_id": 6,
+            "bbox": [
+                318,
+                528,
+                99,
+                127
+            ],
+            "category_id": 9,
+            "id": 12,
+            "slice_ratio": 0.1,
+            "file_name": "06_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "stomach in abdominal CT",
+                    "sent": "stomach in abdominal CT",
+                    "sent_id": 17903
+                },
+                {
+                    "raw": "Abdominal CT showcasing the stomach",
+                    "sent": "Abdominal CT showcasing the stomach",
+                    "sent_id": 17904
+                },
+                {
+                    "raw": "Gastric region in abdominal computed tomography",
+                    "sent": "Gastric region in abdominal computed tomography",
+                    "sent_id": 17905
+                }
+            ],
+            "sent_ids": [
+                17903,
+                17904,
+                17905
+            ],
+            "ann_id": 12,
+            "ref_id": 12
+        },
+        {
+            "mask_file": "06_CT_abdomen_postcava.png",
+            "area": 2748,
+            "iscrowd": 0,
+            "image_id": 6,
+            "bbox": [
+                388,
+                454,
+                65,
+                59
+            ],
+            "category_id": 8,
+            "id": 13,
+            "slice_ratio": 0.4,
+            "file_name": "06_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "postcava in abdominal computed tomography",
+                    "sent": "postcava in abdominal computed tomography",
+                    "sent_id": 17906
+                },
+                {
+                    "raw": "postcava in abdominal CT",
+                    "sent": "postcava in abdominal CT",
+                    "sent_id": 17907
+                }
+            ],
+            "sent_ids": [
+                17906,
+                17907
+            ],
+            "ann_id": 13,
+            "ref_id": 13
+        },
+        {
+            "mask_file": "06_CT_abdomen_pancreas.png",
+            "area": 11680,
+            "iscrowd": 0,
+            "image_id": 6,
+            "bbox": [
+                402,
+                416,
+                323,
+                219
+            ],
+            "category_id": 4,
+            "id": 14,
+            "slice_ratio": 0.8,
+            "file_name": "06_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "pancreas in abdominal CT",
+                    "sent": "pancreas in abdominal CT",
+                    "sent_id": 17908
+                },
+                {
+                    "raw": "pancreatic organ in abdominal CT",
+                    "sent": "pancreatic organ in abdominal CT",
+                    "sent_id": 17909
+                },
+                {
+                    "raw": "pancreas in abdominal computed tomography",
+                    "sent": "pancreas in abdominal computed tomography",
+                    "sent_id": 17910
+                }
+            ],
+            "sent_ids": [
+                17908,
+                17909,
+                17910
+            ],
+            "ann_id": 14,
+            "ref_id": 14
+        },
+        {
+            "mask_file": "06_CT_abdomen_right+adrenal+gland.png",
+            "area": 688,
+            "iscrowd": 0,
+            "image_id": 6,
+            "bbox": [
+                372,
+                432,
+                55,
+                19
+            ],
+            "category_id": 9,
+            "id": 15,
+            "slice_ratio": 0.3,
+            "file_name": "06_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "right adrenal gland",
+                    "sent": "right adrenal gland",
+                    "sent_id": 17911
+                }
+            ],
+            "sent_ids": [
+                17911
+            ],
+            "ann_id": 15,
+            "ref_id": 15
+        },
+        {
+            "mask_file": "06_CT_abdomen_left+adrenal+gland.png",
+            "area": 992,
+            "iscrowd": 0,
+            "image_id": 6,
+            "bbox": [
+                578,
+                436,
+                71,
+                45
+            ],
+            "category_id": 9,
+            "id": 16,
+            "slice_ratio": 0.6,
+            "file_name": "06_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "left adrenal gland",
+                    "sent": "left adrenal gland",
+                    "sent_id": 17912
+                }
+            ],
+            "sent_ids": [
+                17912
+            ],
+            "ann_id": 16,
+            "ref_id": 16
+        },
+        {
+            "mask_file": "06_CT_abdomen_duodenum.png",
+            "area": 2576,
+            "iscrowd": 0,
+            "image_id": 6,
+            "bbox": [
+                336,
+                478,
+                61,
+                101
+            ],
+            "category_id": 9,
+            "id": 17,
+            "slice_ratio": 0.4,
+            "file_name": "06_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "duodenum in abdominal CT",
+                    "sent": "duodenum in abdominal CT",
+                    "sent_id": 17913
+                },
+                {
+                    "raw": "duodenum in abdominal computed tomography",
+                    "sent": "duodenum in abdominal computed tomography",
+                    "sent_id": 17914
+                }
+            ],
+            "sent_ids": [
+                17913,
+                17914
+            ],
+            "ann_id": 17,
+            "ref_id": 17
+        },
+        {
+            "mask_file": "06_CT_abdomen_kidney.png",
+            "area": 8420,
+            "iscrowd": 0,
+            "image_id": 6,
+            "bbox": [
+                356,
+                328,
+                339,
+                87
+            ],
+            "category_id": 3,
+            "id": 18,
+            "slice_ratio": 0.2,
+            "file_name": "06_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "Renal section in abdominal CT imaging",
+                    "sent": "Renal section in abdominal CT imaging",
+                    "sent_id": 17915
+                },
+                {
+                    "raw": "Kidney zone in computed tomography of the abdomen",
+                    "sent": "Kidney zone in computed tomography of the abdomen",
+                    "sent_id": 17916
+                },
+                {
+                    "raw": "Renal region in abdominal computed tomography",
+                    "sent": "Renal region in abdominal computed tomography",
+                    "sent_id": 17917
+                }
+            ],
+            "sent_ids": [
+                17915,
+                17916,
+                17917
+            ],
+            "ann_id": 18,
+            "ref_id": 18
+        },
+        {
+            "mask_file": "06_CT_abdomen_adrenal+gland.png",
+            "area": 1680,
+            "iscrowd": 0,
+            "image_id": 6,
+            "bbox": [
+                372,
+                432,
+                277,
+                49
+            ],
+            "category_id": 9,
+            "id": 19,
+            "slice_ratio": 0.4,
+            "file_name": "06_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "Adrenal gland segmentation in abdominal CT scan",
+                    "sent": "Adrenal gland segmentation in abdominal CT scan",
+                    "sent_id": 17918
+                },
+                {
+                    "raw": "adrenal gland in abdominal CT",
+                    "sent": "adrenal gland in abdominal CT",
+                    "sent_id": 17919
+                },
+                {
+                    "raw": "Adrenal gland identification in CT of the abdomen",
+                    "sent": "Adrenal gland identification in CT of the abdomen",
+                    "sent_id": 17920
+                }
+            ],
+            "sent_ids": [
+                17918,
+                17919,
+                17920
+            ],
+            "ann_id": 19,
+            "ref_id": 19
+        },
+        {
+            "mask_file": "06_CT_abdomen_aorta.png",
+            "area": 2820,
+            "iscrowd": 0,
+            "image_id": 6,
+            "bbox": [
+                472,
+                450,
+                57,
+                59
+            ],
+            "category_id": 8,
+            "id": 20,
+            "slice_ratio": 0.1,
+            "file_name": "06_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "aorta",
+                    "sent": "aorta",
+                    "sent_id": 39931
+                }
+            ],
+            "sent_ids": [
+                39931
+            ],
+            "ann_id": 20,
+            "ref_id": 20
+        },
+        {
+            "mask_file": "07_CT_abdomen_kidney.png",
+            "area": 11200,
+            "iscrowd": 0,
+            "image_id": 7,
+            "bbox": [
+                570,
+                258,
+                135,
+                121
+            ],
+            "category_id": 3,
+            "id": 21,
+            "slice_ratio": 0.2,
+            "file_name": "07_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "renal organ",
+                    "sent": "renal organ",
+                    "sent_id": 8679
+                },
+                {
+                    "raw": "kidney",
+                    "sent": "kidney",
+                    "sent_id": 8680
+                }
+            ],
+            "sent_ids": [
+                8679,
+                8680
+            ],
+            "ann_id": 21,
+            "ref_id": 21
+        },
+        {
+            "mask_file": "07_CT_abdomen_tumor.png",
+            "area": 53956,
+            "iscrowd": 0,
+            "image_id": 7,
+            "bbox": [
+                398,
+                598,
+                265,
+                273
+            ],
+            "category_id": 10,
+            "id": 22,
+            "slice_ratio": 1.0,
+            "file_name": "07_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "Carcinoma identified in the abdomen via CT",
+                    "sent": "Carcinoma identified in the abdomen via CT",
+                    "sent_id": 8681
+                },
+                {
+                    "raw": "Neoplasm within the abdominal region visualized in CT scan",
+                    "sent": "Neoplasm within the abdominal region visualized in CT scan",
+                    "sent_id": 8682
+                },
+                {
+                    "raw": "CT imaging of an abdominal tumor",
+                    "sent": "CT imaging of an abdominal tumor",
+                    "sent_id": 8683
+                }
+            ],
+            "sent_ids": [
+                8681,
+                8682,
+                8683
+            ],
+            "ann_id": 22,
+            "ref_id": 22
+        },
+        {
+            "mask_file": "07_CT_abdomen_kidney+cyst.png",
+            "area": 1596,
+            "iscrowd": 0,
+            "image_id": 7,
+            "bbox": [
+                666,
+                310,
+                39,
+                47
+            ],
+            "category_id": 12,
+            "id": 23,
+            "slice_ratio": 0.7,
+            "file_name": "07_CT_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "kidney cyst in abdominal CT",
+                    "sent": "kidney cyst in abdominal CT",
+                    "sent_id": 8684
+                },
+                {
+                    "raw": "kidney cyst in abdominal computed tomography",
+                    "sent": "kidney cyst in abdominal computed tomography",
+                    "sent_id": 8685
+                }
+            ],
+            "sent_ids": [
+                8684,
+                8685
+            ],
+            "ann_id": 23,
+            "ref_id": 23
+        },
+        {
+            "mask_file": "08_MRI_heart_right+heart+ventricle.png",
+            "area": 23920,
+            "iscrowd": 0,
+            "image_id": 8,
+            "bbox": [
+                320,
+                404,
+                155,
+                255
+            ],
+            "category_id": 5,
+            "id": 24,
+            "slice_ratio": 1.0,
+            "file_name": "08_MRI_heart.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "right heart ventricle in cardiac MRI",
+                    "sent": "right heart ventricle in cardiac MRI",
+                    "sent_id": 3884
+                }
+            ],
+            "sent_ids": [
+                3884
+            ],
+            "ann_id": 24,
+            "ref_id": 24
+        },
+        {
+            "mask_file": "08_MRI_heart_myocardium.png",
+            "area": 15568,
+            "iscrowd": 0,
+            "image_id": 8,
+            "bbox": [
+                408,
+                424,
+                171,
+                187
+            ],
+            "category_id": 5,
+            "id": 25,
+            "slice_ratio": 1.0,
+            "file_name": "08_MRI_heart.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "myocardium in cardiac MRI",
+                    "sent": "myocardium in cardiac MRI",
+                    "sent_id": 3885
+                }
+            ],
+            "sent_ids": [
+                3885
+            ],
+            "ann_id": 25,
+            "ref_id": 25
+        },
+        {
+            "mask_file": "08_MRI_heart_left+heart+ventricle.png",
+            "area": 8592,
+            "iscrowd": 0,
+            "image_id": 8,
+            "bbox": [
+                452,
+                460,
+                95,
+                115
+            ],
+            "category_id": 5,
+            "id": 26,
+            "slice_ratio": 0.7,
+            "file_name": "08_MRI_heart.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "left heart ventricle",
+                    "sent": "left heart ventricle",
+                    "sent_id": 3886
+                },
+                {
+                    "raw": "left ventricle",
+                    "sent": "left ventricle",
+                    "sent_id": 3887
+                }
+            ],
+            "sent_ids": [
+                3886,
+                3887
+            ],
+            "ann_id": 26,
+            "ref_id": 26
+        },
+        {
+            "mask_file": "09_MRI-FLAIR_brain_lower-grade+glioma.png",
+            "area": 98080,
+            "iscrowd": 0,
+            "image_id": 9,
+            "bbox": [
+                196,
+                268,
+                411,
+                367
+            ],
+            "category_id": 10,
+            "id": 27,
+            "slice_ratio": 0.9,
+            "file_name": "09_MRI-FLAIR_brain.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "lower-grade glioma in brain MRI",
+                    "sent": "lower-grade glioma in brain MRI",
+                    "sent_id": 564
+                },
+                {
+                    "raw": "lower-grade glioma in brain MR",
+                    "sent": "lower-grade glioma in brain MR",
+                    "sent_id": 565
+                },
+                {
+                    "raw": "lower-grade glioma in brain magnetic resonance imaging",
+                    "sent": "lower-grade glioma in brain magnetic resonance imaging",
+                    "sent_id": 566
+                }
+            ],
+            "sent_ids": [
+                564,
+                565,
+                566
+            ],
+            "ann_id": 27,
+            "ref_id": 27
+        },
+        {
+            "mask_file": "10_MRI-T1-Gd_brain_non-enhancing+tumor.png",
+            "area": 7295,
+            "iscrowd": 0,
+            "image_id": 10,
+            "bbox": [
+                542,
+                260,
+                127,
+                149
+            ],
+            "category_id": 10,
+            "id": 28,
+            "slice_ratio": 0.6,
+            "file_name": "10_MRI-T1-Gd_brain.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "non-enhancing tumor",
+                    "sent": "non-enhancing tumor",
+                    "sent_id": 29519
+                }
+            ],
+            "sent_ids": [
+                29519
+            ],
+            "ann_id": 28,
+            "ref_id": 28
+        },
+        {
+            "mask_file": "10_MRI-T1-Gd_brain_enhancing+tumor.png",
+            "area": 19270,
+            "iscrowd": 0,
+            "image_id": 10,
+            "bbox": [
+                516,
+                226,
+                191,
+                208
+            ],
+            "category_id": 10,
+            "id": 29,
+            "slice_ratio": 0.8,
+            "file_name": "10_MRI-T1-Gd_brain.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "enhancing tumor in brain MRI",
+                    "sent": "enhancing tumor in brain MRI",
+                    "sent_id": 29520
+                },
+                {
+                    "raw": "enhancing tumor in brain magnetic resonance imaging",
+                    "sent": "enhancing tumor in brain magnetic resonance imaging",
+                    "sent_id": 29521
+                },
+                {
+                    "raw": "enhancing tumor in brain MR",
+                    "sent": "enhancing tumor in brain MR",
+                    "sent_id": 29522
+                }
+            ],
+            "sent_ids": [
+                29520,
+                29521,
+                29522
+            ],
+            "ann_id": 29,
+            "ref_id": 29
+        },
+        {
+            "mask_file": "10_MRI-T1-Gd_brain_tumor+core.png",
+            "area": 26565,
+            "iscrowd": 0,
+            "image_id": 10,
+            "bbox": [
+                516,
+                226,
+                191,
+                208
+            ],
+            "category_id": 10,
+            "id": 30,
+            "slice_ratio": 1.0,
+            "file_name": "10_MRI-T1-Gd_brain.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "tumor core in brain MRI",
+                    "sent": "tumor core in brain MRI",
+                    "sent_id": 29526
+                }
+            ],
+            "sent_ids": [
+                29526
+            ],
+            "ann_id": 30,
+            "ref_id": 30
+        },
+        {
+            "mask_file": "11_MRI_heart_left+heart+atrium.png",
+            "area": 11611,
+            "iscrowd": 0,
+            "image_id": 11,
+            "bbox": [
+                416,
+                490,
+                95,
+                155
+            ],
+            "category_id": 5,
+            "id": 31,
+            "slice_ratio": 0.8,
+            "file_name": "11_MRI_heart.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "left heart atrium",
+                    "sent": "left heart atrium",
+                    "sent_id": 205
+                }
+            ],
+            "sent_ids": [
+                205
+            ],
+            "ann_id": 31,
+            "ref_id": 31
+        },
+        {
+            "mask_file": "12_MRI_brain_anterior+hippocampus.png",
+            "area": 63862,
+            "iscrowd": 0,
+            "image_id": 12,
+            "bbox": [
+                313,
+                585,
+                376,
+                292
+            ],
+            "category_id": 6,
+            "id": 32,
+            "slice_ratio": 0.8,
+            "file_name": "12_MRI_brain.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "anterior hippocampus in brain MRI",
+                    "sent": "anterior hippocampus in brain MRI",
+                    "sent_id": 2631
+                },
+                {
+                    "raw": "Anterior part of the hippocampus in brain MRI",
+                    "sent": "Anterior part of the hippocampus in brain MRI",
+                    "sent_id": 2632
+                },
+                {
+                    "raw": "Hippocampus's anterior region in brain MRI",
+                    "sent": "Hippocampus's anterior region in brain MRI",
+                    "sent_id": 2633
+                }
+            ],
+            "sent_ids": [
+                2631,
+                2632,
+                2633
+            ],
+            "ann_id": 32,
+            "ref_id": 32
+        },
+        {
+            "mask_file": "12_MRI_brain_posterior+hippocampus.png",
+            "area": 34167,
+            "iscrowd": 0,
+            "image_id": 12,
+            "bbox": [
+                313,
+                397,
+                250,
+                187
+            ],
+            "category_id": 6,
+            "id": 33,
+            "slice_ratio": 0.5,
+            "file_name": "12_MRI_brain.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "Posterior region of the hippocampus in brain MRI",
+                    "sent": "Posterior region of the hippocampus in brain MRI",
+                    "sent_id": 2634
+                },
+                {
+                    "raw": "posterior hippocampus in brain MRI",
+                    "sent": "posterior hippocampus in brain MRI",
+                    "sent_id": 2635
+                },
+                {
+                    "raw": "Posterior part of the hippocampus in brain MRI",
+                    "sent": "Posterior part of the hippocampus in brain MRI",
+                    "sent_id": 2636
+                }
+            ],
+            "sent_ids": [
+                2634,
+                2635,
+                2636
+            ],
+            "ann_id": 33,
+            "ref_id": 33
+        },
+        {
+            "mask_file": "13_MRI_abdomen_aorta.png",
+            "area": 1670,
+            "iscrowd": 0,
+            "image_id": 13,
+            "bbox": [
+                444,
+                473,
+                44,
+                45
+            ],
+            "category_id": 8,
+            "id": 34,
+            "slice_ratio": 0.7,
+            "file_name": "13_MRI_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "aorta in abdominal MRI",
+                    "sent": "aorta in abdominal MRI",
+                    "sent_id": 506
+                },
+                {
+                    "raw": "Abdominal MRI showcasing the aorta",
+                    "sent": "Abdominal MRI showcasing the aorta",
+                    "sent_id": 507
+                },
+                {
+                    "raw": "Aorta as visualized in abdominal MRI",
+                    "sent": "Aorta as visualized in abdominal MRI",
+                    "sent_id": 508
+                }
+            ],
+            "sent_ids": [
+                506,
+                507,
+                508
+            ],
+            "ann_id": 34,
+            "ref_id": 34
+        },
+        {
+            "mask_file": "13_MRI_abdomen_spleen.png",
+            "area": 4149,
+            "iscrowd": 0,
+            "image_id": 13,
+            "bbox": [
+                220,
+                336,
+                101,
+                72
+            ],
+            "category_id": 9,
+            "id": 35,
+            "slice_ratio": 0.2,
+            "file_name": "13_MRI_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "spleen in abdominal MRI",
+                    "sent": "spleen in abdominal MRI",
+                    "sent_id": 519
+                }
+            ],
+            "sent_ids": [
+                519
+            ],
+            "ann_id": 35,
+            "ref_id": 35
+        },
+        {
+            "mask_file": "13_MRI_abdomen_right+kidney.png",
+            "area": 6313,
+            "iscrowd": 0,
+            "image_id": 13,
+            "bbox": [
+                588,
+                366,
+                101,
+                83
+            ],
+            "category_id": 3,
+            "id": 36,
+            "slice_ratio": 0.4,
+            "file_name": "13_MRI_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "right kidney",
+                    "sent": "right kidney",
+                    "sent_id": 520
+                }
+            ],
+            "sent_ids": [
+                520
+            ],
+            "ann_id": 36,
+            "ref_id": 36
+        },
+        {
+            "mask_file": "13_MRI_abdomen_left+kidney.png",
+            "area": 15515,
+            "iscrowd": 0,
+            "image_id": 13,
+            "bbox": [
+                297,
+                348,
+                154,
+                135
+            ],
+            "category_id": 3,
+            "id": 37,
+            "slice_ratio": 0.8,
+            "file_name": "13_MRI_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "left kidney in abdominal MRI",
+                    "sent": "left kidney in abdominal MRI",
+                    "sent_id": 521
+                }
+            ],
+            "sent_ids": [
+                521
+            ],
+            "ann_id": 37,
+            "ref_id": 37
+        },
+        {
+            "mask_file": "13_MRI_abdomen_gallbladder.png",
+            "area": 8345,
+            "iscrowd": 0,
+            "image_id": 13,
+            "bbox": [
+                628,
+                549,
+                102,
+                120
+            ],
+            "category_id": 9,
+            "id": 38,
+            "slice_ratio": 1.0,
+            "file_name": "13_MRI_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "Gallbladder site in abdominal MRI scan",
+                    "sent": "Gallbladder site in abdominal MRI scan",
+                    "sent_id": 522
+                },
+                {
+                    "raw": "Gallbladder area in MRI of the abdomen",
+                    "sent": "Gallbladder area in MRI of the abdomen",
+                    "sent_id": 523
+                },
+                {
+                    "raw": "gallbladder in abdominal MRI",
+                    "sent": "gallbladder in abdominal MRI",
+                    "sent_id": 524
+                }
+            ],
+            "sent_ids": [
+                522,
+                523,
+                524
+            ],
+            "ann_id": 38,
+            "ref_id": 38
+        },
+        {
+            "mask_file": "13_MRI_abdomen_liver.png",
+            "area": 56869,
+            "iscrowd": 0,
+            "image_id": 13,
+            "bbox": [
+                464,
+                336,
+                394,
+                365
+            ],
+            "category_id": 1,
+            "id": 39,
+            "slice_ratio": 0.4,
+            "file_name": "13_MRI_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "liver in abdominal MRI",
+                    "sent": "liver in abdominal MRI",
+                    "sent_id": 525
+                },
+                {
+                    "raw": "Hepatic zone in abdominal MRI scan",
+                    "sent": "Hepatic zone in abdominal MRI scan",
+                    "sent_id": 526
+                },
+                {
+                    "raw": "Liver area in MRI of the abdomen",
+                    "sent": "Liver area in MRI of the abdomen",
+                    "sent_id": 527
+                }
+            ],
+            "sent_ids": [
+                525,
+                526,
+                527
+            ],
+            "ann_id": 39,
+            "ref_id": 39
+        },
+        {
+            "mask_file": "13_MRI_abdomen_stomach.png",
+            "area": 7430,
+            "iscrowd": 0,
+            "image_id": 13,
+            "bbox": [
+                425,
+                590,
+                182,
+                86
+            ],
+            "category_id": 9,
+            "id": 40,
+            "slice_ratio": 0.3,
+            "file_name": "13_MRI_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "Gastric region in abdominal Magnetic Resonance Imaging",
+                    "sent": "Gastric region in abdominal Magnetic Resonance Imaging",
+                    "sent_id": 528
+                },
+                {
+                    "raw": "Abdominal MRI showcasing the stomach",
+                    "sent": "Abdominal MRI showcasing the stomach",
+                    "sent_id": 529
+                },
+                {
+                    "raw": "Stomach region as visualized in abdominal MRI",
+                    "sent": "Stomach region as visualized in abdominal MRI",
+                    "sent_id": 530
+                }
+            ],
+            "sent_ids": [
+                528,
+                529,
+                530
+            ],
+            "ann_id": 40,
+            "ref_id": 40
+        },
+        {
+            "mask_file": "13_MRI_abdomen_postcava.png",
+            "area": 2224,
+            "iscrowd": 0,
+            "image_id": 13,
+            "bbox": [
+                544,
+                469,
+                74,
+                51
+            ],
+            "category_id": 8,
+            "id": 41,
+            "slice_ratio": 0.6,
+            "file_name": "13_MRI_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "postcava in abdominal MRI",
+                    "sent": "postcava in abdominal MRI",
+                    "sent_id": 534
+                },
+                {
+                    "raw": "Posterior vena cava as depicted in MRI of the abdomen",
+                    "sent": "Posterior vena cava as depicted in MRI of the abdomen",
+                    "sent_id": 535
+                },
+                {
+                    "raw": "Inferior vena cava as visualized in abdominal Magnetic Resonance Imaging",
+                    "sent": "Inferior vena cava as visualized in abdominal Magnetic Resonance Imaging",
+                    "sent_id": 536
+                }
+            ],
+            "sent_ids": [
+                534,
+                535,
+                536
+            ],
+            "ann_id": 41,
+            "ref_id": 41
+        },
+        {
+            "mask_file": "13_MRI_abdomen_pancreas.png",
+            "area": 10347,
+            "iscrowd": 0,
+            "image_id": 13,
+            "bbox": [
+                288,
+                450,
+                239,
+                159
+            ],
+            "category_id": 4,
+            "id": 42,
+            "slice_ratio": 0.9,
+            "file_name": "13_MRI_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "pancreatic organ in abdominal MRI",
+                    "sent": "pancreatic organ in abdominal MRI",
+                    "sent_id": 537
+                },
+                {
+                    "raw": "pancreas in abdominal MRI",
+                    "sent": "pancreas in abdominal MRI",
+                    "sent_id": 538
+                },
+                {
+                    "raw": "pancreas in abdominal MR",
+                    "sent": "pancreas in abdominal MR",
+                    "sent_id": 539
+                }
+            ],
+            "sent_ids": [
+                537,
+                538,
+                539
+            ],
+            "ann_id": 42,
+            "ref_id": 42
+        },
+        {
+            "mask_file": "13_MRI_abdomen_right+adrenal+gland.png",
+            "area": 228,
+            "iscrowd": 0,
+            "image_id": 13,
+            "bbox": [
+                580,
+                459,
+                23,
+                18
+            ],
+            "category_id": 9,
+            "id": 43,
+            "slice_ratio": 0.2,
+            "file_name": "13_MRI_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "right adrenal gland in abdominal MR",
+                    "sent": "right adrenal gland in abdominal MR",
+                    "sent_id": 540
+                },
+                {
+                    "raw": "right adrenal gland in abdominal magnetic resonance imaging",
+                    "sent": "right adrenal gland in abdominal magnetic resonance imaging",
+                    "sent_id": 541
+                },
+                {
+                    "raw": "right adrenal gland in abdominal MRI",
+                    "sent": "right adrenal gland in abdominal MRI",
+                    "sent_id": 542
+                }
+            ],
+            "sent_ids": [
+                540,
+                541,
+                542
+            ],
+            "ann_id": 43,
+            "ref_id": 43
+        },
+        {
+            "mask_file": "13_MRI_abdomen_left+adrenal+gland.png",
+            "area": 437,
+            "iscrowd": 0,
+            "image_id": 13,
+            "bbox": [
+                391,
+                487,
+                36,
+                26
+            ],
+            "category_id": 9,
+            "id": 44,
+            "slice_ratio": 0.8,
+            "file_name": "13_MRI_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "Left adrenal gland as seen in abdominal MRI",
+                    "sent": "Left adrenal gland as seen in abdominal MRI",
+                    "sent_id": 543
+                },
+                {
+                    "raw": "Left adrenal gland visualized in abdominal MRI",
+                    "sent": "Left adrenal gland visualized in abdominal MRI",
+                    "sent_id": 544
+                },
+                {
+                    "raw": "Abdominal MRI showcasing the left adrenal gland",
+                    "sent": "Abdominal MRI showcasing the left adrenal gland",
+                    "sent_id": 545
+                }
+            ],
+            "sent_ids": [
+                543,
+                544,
+                545
+            ],
+            "ann_id": 44,
+            "ref_id": 44
+        },
+        {
+            "mask_file": "13_MRI_abdomen_duodenum.png",
+            "area": 2374,
+            "iscrowd": 0,
+            "image_id": 13,
+            "bbox": [
+                580,
+                542,
+                39,
+                74
+            ],
+            "category_id": 9,
+            "id": 45,
+            "slice_ratio": 0.4,
+            "file_name": "13_MRI_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "duodenum in abdominal MRI",
+                    "sent": "duodenum in abdominal MRI",
+                    "sent_id": 546
+                }
+            ],
+            "sent_ids": [
+                546
+            ],
+            "ann_id": 45,
+            "ref_id": 45
+        },
+        {
+            "mask_file": "13_MRI_abdomen_kidney.png",
+            "area": 21828,
+            "iscrowd": 0,
+            "image_id": 13,
+            "bbox": [
+                297,
+                348,
+                392,
+                135
+            ],
+            "category_id": 3,
+            "id": 46,
+            "slice_ratio": 0.6,
+            "file_name": "13_MRI_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "renal organ",
+                    "sent": "renal organ",
+                    "sent_id": 547
+                },
+                {
+                    "raw": "kidney",
+                    "sent": "kidney",
+                    "sent_id": 548
+                }
+            ],
+            "sent_ids": [
+                547,
+                548
+            ],
+            "ann_id": 46,
+            "ref_id": 46
+        },
+        {
+            "mask_file": "13_MRI_abdomen_adrenal+gland.png",
+            "area": 665,
+            "iscrowd": 0,
+            "image_id": 13,
+            "bbox": [
+                391,
+                459,
+                212,
+                54
+            ],
+            "category_id": 9,
+            "id": 47,
+            "slice_ratio": 0.4,
+            "file_name": "13_MRI_abdomen.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "adrenal gland",
+                    "sent": "adrenal gland",
+                    "sent_id": 549
+                }
+            ],
+            "sent_ids": [
+                549
+            ],
+            "ann_id": 47,
+            "ref_id": 47
+        },
+        {
+            "mask_file": "14_MRI_prostate_prostate.png",
+            "area": 53412,
+            "iscrowd": 0,
+            "image_id": 14,
+            "bbox": [
+                328,
+                382,
+                245,
+                267
+            ],
+            "category_id": 9,
+            "id": 48,
+            "slice_ratio": 0.6,
+            "file_name": "14_MRI_prostate.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "Prostate gland in prostate Magnetic Resonance Imaging (MRI)",
+                    "sent": "Prostate gland in prostate Magnetic Resonance Imaging (MRI)",
+                    "sent_id": 439
+                },
+                {
+                    "raw": "Prostate region in MRI focused on the prostate",
+                    "sent": "Prostate region in MRI focused on the prostate",
+                    "sent_id": 440
+                },
+                {
+                    "raw": "Prostate tissue in MRI of the prostate",
+                    "sent": "Prostate tissue in MRI of the prostate",
+                    "sent_id": 441
+                }
+            ],
+            "sent_ids": [
+                439,
+                440,
+                441
+            ],
+            "ann_id": 48,
+            "ref_id": 48
+        },
+        {
+            "mask_file": "15_X-Ray_chest_lung.png",
+            "area": 388640,
+            "iscrowd": 0,
+            "image_id": 15,
+            "bbox": [
+                68,
+                68,
+                883,
+                863
+            ],
+            "category_id": 2,
+            "id": 49,
+            "file_name": "15_X-Ray_chest.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "lung in chest X-Ray",
+                    "sent": "lung in chest X-Ray",
+                    "sent_id": 2763
+                },
+                {
+                    "raw": "lung in chest X Ray",
+                    "sent": "lung in chest X Ray",
+                    "sent_id": 2764
+                },
+                {
+                    "raw": "left and right lungs in chest X-Ray",
+                    "sent": "left and right lungs in chest X-Ray",
+                    "sent_id": 2765
+                }
+            ],
+            "sent_ids": [
+                2763,
+                2764,
+                2765
+            ],
+            "ann_id": 49,
+            "ref_id": 49
+        },
+        {
+            "mask_file": "15_X-Ray_chest_COVID-19+infection.png",
+            "area": 388640,
+            "iscrowd": 0,
+            "image_id": 15,
+            "bbox": [
+                68,
+                68,
+                883,
+                863
+            ],
+            "category_id": 11,
+            "id": 50,
+            "file_name": "15_X-Ray_chest.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "infection in chest X Ray",
+                    "sent": "infection in chest X Ray",
+                    "sent_id": 2766
+                },
+                {
+                    "raw": "infection in chest X-Ray",
+                    "sent": "infection in chest X-Ray",
+                    "sent_id": 2767
+                },
+                {
+                    "raw": "COVID-19 infection in chest X-Ray",
+                    "sent": "COVID-19 infection in chest X-Ray",
+                    "sent_id": 2768
+                }
+            ],
+            "sent_ids": [
+                2766,
+                2767,
+                2768
+            ],
+            "ann_id": 50,
+            "ref_id": 50
+        },
+        {
+            "mask_file": "15_X-Ray_chest_left+lung.png",
+            "area": 180576,
+            "iscrowd": 0,
+            "image_id": 15,
+            "bbox": [
+                72,
+                556,
+                879,
+                375
+            ],
+            "category_id": 2,
+            "id": 51,
+            "file_name": "15_X-Ray_chest.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "left lung",
+                    "sent": "left lung",
+                    "sent_id": 6334
+                }
+            ],
+            "sent_ids": [
+                6334
+            ],
+            "ann_id": 51,
+            "ref_id": 51
+        },
+        {
+            "mask_file": "15_X-Ray_chest_right+lung.png",
+            "area": 208064,
+            "iscrowd": 0,
+            "image_id": 15,
+            "bbox": [
+                68,
+                68,
+                879,
+                407
+            ],
+            "category_id": 2,
+            "id": 52,
+            "file_name": "15_X-Ray_chest.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "right lung",
+                    "sent": "right lung",
+                    "sent_id": 6335
+                }
+            ],
+            "sent_ids": [
+                6335
+            ],
+            "ann_id": 52,
+            "ref_id": 52
+        },
+        {
+            "mask_file": "16_X-Ray_chest_lung+opacity.png",
+            "area": 395008,
+            "iscrowd": 0,
+            "image_id": 16,
+            "bbox": [
+                84,
+                48,
+                767,
+                919
+            ],
+            "category_id": 11,
+            "id": 53,
+            "slice_ratio": 1.0,
+            "file_name": "16_X-Ray_chest.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "lung opacity in chest X-Ray",
+                    "sent": "lung opacity in chest X-Ray",
+                    "sent_id": 604
+                },
+                {
+                    "raw": "infectious site in chest X-Ray",
+                    "sent": "infectious site in chest X-Ray",
+                    "sent_id": 605
+                },
+                {
+                    "raw": "infection in chest X-Ray",
+                    "sent": "infection in chest X-Ray",
+                    "sent_id": 606
+                }
+            ],
+            "sent_ids": [
+                604,
+                605,
+                606
+            ],
+            "ann_id": 53,
+            "ref_id": 53
+        },
+        {
+            "mask_file": "17_X-Ray_chest_viral+pneumonia.png",
+            "area": 315888,
+            "iscrowd": 0,
+            "image_id": 17,
+            "bbox": [
+                80,
+                120,
+                891,
+                759
+            ],
+            "category_id": 11,
+            "id": 54,
+            "slice_ratio": 1.0,
+            "file_name": "17_X-Ray_chest.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "infection",
+                    "sent": "infection",
+                    "sent_id": 671
+                },
+                {
+                    "raw": "infectious site",
+                    "sent": "infectious site",
+                    "sent_id": 672
+                },
+                {
+                    "raw": "infected region",
+                    "sent": "infected region",
+                    "sent_id": 673
+                }
+            ],
+            "sent_ids": [
+                671,
+                672,
+                673
+            ],
+            "ann_id": 54,
+            "ref_id": 54
+        },
+        {
+            "mask_file": "18_pathology_colon_glandular+structure.png",
+            "area": 436381,
+            "iscrowd": 0,
+            "image_id": 18,
+            "bbox": [
+                167,
+                0,
+                689,
+                1023
+            ],
+            "category_id": 15,
+            "id": 55,
+            "slice_ratio": 1.0,
+            "file_name": "18_pathology_colon.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "glandular structure in colon pathology",
+                    "sent": "glandular structure in colon pathology",
+                    "sent_id": 78
+                },
+                {
+                    "raw": "glandular structure in colon pathology image",
+                    "sent": "glandular structure in colon pathology image",
+                    "sent_id": 79
+                },
+                {
+                    "raw": "glandular structure in colon histological slide",
+                    "sent": "glandular structure in colon histological slide",
+                    "sent_id": 80
+                }
+            ],
+            "sent_ids": [
+                78,
+                79,
+                80
+            ],
+            "ann_id": 55,
+            "ref_id": 55
+        },
+        {
+            "mask_file": "19_pathology_liver_neoplastic+cells.png",
+            "area": 40320,
+            "iscrowd": 0,
+            "image_id": 19,
+            "bbox": [
+                732,
+                328,
+                291,
+                403
+            ],
+            "category_id": 15,
+            "id": 56,
+            "slice_ratio": 1.0,
+            "file_name": "19_pathology_liver.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "neoplastic cells in liver pathology",
+                    "sent": "neoplastic cells in liver pathology",
+                    "sent_id": 1478
+                }
+            ],
+            "sent_ids": [
+                1478
+            ],
+            "ann_id": 56,
+            "ref_id": 56
+        },
+        {
+            "mask_file": "19_pathology_liver_inflammatory+cells.png",
+            "area": 17600,
+            "iscrowd": 0,
+            "image_id": 19,
+            "bbox": [
+                668,
+                204,
+                355,
+                819
+            ],
+            "category_id": 15,
+            "id": 57,
+            "slice_ratio": 1.0,
+            "file_name": "19_pathology_liver.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "inflammatory cells in liver pathology",
+                    "sent": "inflammatory cells in liver pathology",
+                    "sent_id": 1479
+                }
+            ],
+            "sent_ids": [
+                1479
+            ],
+            "ann_id": 57,
+            "ref_id": 57
+        },
+        {
+            "mask_file": "19_pathology_liver_connective+tissue+cells.png",
+            "area": 102656,
+            "iscrowd": 0,
+            "image_id": 19,
+            "bbox": [
+                20,
+                20,
+                631,
+                1003
+            ],
+            "category_id": 15,
+            "id": 58,
+            "slice_ratio": 1.0,
+            "file_name": "19_pathology_liver.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "connective tissue cells in liver pathology",
+                    "sent": "connective tissue cells in liver pathology",
+                    "sent_id": 1480
+                },
+                {
+                    "raw": "connective tissue cells in liver pathology image",
+                    "sent": "connective tissue cells in liver pathology image",
+                    "sent_id": 1481
+                },
+                {
+                    "raw": "connective tissue cells in liver histological slide",
+                    "sent": "connective tissue cells in liver histological slide",
+                    "sent_id": 1482
+                }
+            ],
+            "sent_ids": [
+                1480,
+                1481,
+                1482
+            ],
+            "ann_id": 58,
+            "ref_id": 58
+        },
+        {
+            "mask_file": "20_ultrasound_breast_tumor.png",
+            "area": 90559,
+            "iscrowd": 0,
+            "image_id": 20,
+            "bbox": [
+                220,
+                162,
+                309,
+                390
+            ],
+            "category_id": 10,
+            "id": 59,
+            "slice_ratio": 1.0,
+            "file_name": "20_ultrasound_breast.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "neoplasm in breast ultrasound",
+                    "sent": "neoplasm in breast ultrasound",
+                    "sent_id": 341
+                },
+                {
+                    "raw": "tumor in breast ultrasonography",
+                    "sent": "tumor in breast ultrasonography",
+                    "sent_id": 342
+                },
+                {
+                    "raw": "malignant lesion in breast ultrasound",
+                    "sent": "malignant lesion in breast ultrasound",
+                    "sent_id": 343
+                }
+            ],
+            "sent_ids": [
+                341,
+                342,
+                343
+            ],
+            "ann_id": 59,
+            "ref_id": 59
+        },
+        {
+            "mask_file": "21_ultrasound_heart_left+heart+ventricle.png",
+            "area": 105432,
+            "iscrowd": 0,
+            "image_id": 21,
+            "bbox": [
+                444,
+                246,
+                304,
+                463
+            ],
+            "category_id": 5,
+            "id": 60,
+            "slice_ratio": 1.0,
+            "file_name": "21_ultrasound_heart.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "left heart ventricle in cardiac ultrasound",
+                    "sent": "left heart ventricle in cardiac ultrasound",
+                    "sent_id": 1357
+                }
+            ],
+            "sent_ids": [
+                1357
+            ],
+            "ann_id": 60,
+            "ref_id": 60
+        },
+        {
+            "mask_file": "21_ultrasound_heart_left+heart+atrium.png",
+            "area": 48178,
+            "iscrowd": 0,
+            "image_id": 21,
+            "bbox": [
+                541,
+                684,
+                227,
+                249
+            ],
+            "category_id": 5,
+            "id": 61,
+            "slice_ratio": 1.0,
+            "file_name": "21_ultrasound_heart.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "left heart atrium",
+                    "sent": "left heart atrium",
+                    "sent_id": 1358
+                }
+            ],
+            "sent_ids": [
+                1358
+            ],
+            "ann_id": 61,
+            "ref_id": 61
+        },
+        {
+            "mask_file": "22_ultrasound_transperineal_public+symphysis.png",
+            "area": 20912,
+            "iscrowd": 0,
+            "image_id": 22,
+            "bbox": [
+                100,
+                320,
+                111,
+                247
+            ],
+            "category_id": 16,
+            "id": 62,
+            "slice_ratio": 1.0,
+            "file_name": "22_ultrasound_transperineal.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "public symphysis in transperineal ultrasound",
+                    "sent": "public symphysis in transperineal ultrasound",
+                    "sent_id": 12
+                }
+            ],
+            "sent_ids": [
+                12
+            ],
+            "ann_id": 62,
+            "ref_id": 62
+        },
+        {
+            "mask_file": "22_ultrasound_transperineal_fetal+head.png",
+            "area": 135552,
+            "iscrowd": 0,
+            "image_id": 22,
+            "bbox": [
+                256,
+                168,
+                451,
+                371
+            ],
+            "category_id": 16,
+            "id": 63,
+            "slice_ratio": 1.0,
+            "file_name": "22_ultrasound_transperineal.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "Fetal cranium visualized in transperineal ultrasound",
+                    "sent": "Fetal cranium visualized in transperineal ultrasound",
+                    "sent_id": 13
+                },
+                {
+                    "raw": "Transperineal ultrasound of the fetal head",
+                    "sent": "Transperineal ultrasound of the fetal head",
+                    "sent_id": 14
+                },
+                {
+                    "raw": "Transperineal ultrasound imaging of the fetal cephalic region",
+                    "sent": "Transperineal ultrasound imaging of the fetal cephalic region",
+                    "sent_id": 15
+                }
+            ],
+            "sent_ids": [
+                13,
+                14,
+                15
+            ],
+            "ann_id": 63,
+            "ref_id": 63
+        },
+        {
+            "mask_file": "23_fundus_retinal_optic+disc.png",
+            "area": 12876,
+            "iscrowd": 0,
+            "image_id": 23,
+            "bbox": [
+                417,
+                244,
+                161,
+                135
+            ],
+            "category_id": 7,
+            "id": 64,
+            "slice_ratio": 1.0,
+            "file_name": "23_fundus_retinal.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "optic disc in retinal fundus image",
+                    "sent": "optic disc in retinal fundus image",
+                    "sent_id": 38
+                },
+                {
+                    "raw": "optic disc in retinal funduscopy",
+                    "sent": "optic disc in retinal funduscopy",
+                    "sent_id": 39
+                },
+                {
+                    "raw": "optic disc in retinal fundus",
+                    "sent": "optic disc in retinal fundus",
+                    "sent_id": 40
+                }
+            ],
+            "sent_ids": [
+                38,
+                39,
+                40
+            ],
+            "ann_id": 64,
+            "ref_id": 64
+        },
+        {
+            "mask_file": "23_fundus_retinal_optic+cup.png",
+            "area": 4452,
+            "iscrowd": 0,
+            "image_id": 23,
+            "bbox": [
+                459,
+                282,
+                76,
+                73
+            ],
+            "category_id": 7,
+            "id": 65,
+            "slice_ratio": 1.0,
+            "file_name": "23_fundus_retinal.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "optic cup in retinal fundus",
+                    "sent": "optic cup in retinal fundus",
+                    "sent_id": 41
+                },
+                {
+                    "raw": "Optic cup located in the retinal fundus",
+                    "sent": "Optic cup located in the retinal fundus",
+                    "sent_id": 42
+                },
+                {
+                    "raw": "Optic cup identified in the retinal fundus",
+                    "sent": "Optic cup identified in the retinal fundus",
+                    "sent_id": 43
+                }
+            ],
+            "sent_ids": [
+                41,
+                42,
+                43
+            ],
+            "ann_id": 65,
+            "ref_id": 65
+        },
+        {
+            "mask_file": "24_endoscope_colon_neoplastic+polyp.png",
+            "area": 25444,
+            "iscrowd": 0,
+            "image_id": 24,
+            "bbox": [
+                383,
+                132,
+                216,
+                149
+            ],
+            "category_id": 12,
+            "id": 66,
+            "slice_ratio": 1.0,
+            "file_name": "24_endoscope_colon.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "Endoscopic view of a neoplastic polyp in the colon",
+                    "sent": "Endoscopic view of a neoplastic polyp in the colon",
+                    "sent_id": 30
+                },
+                {
+                    "raw": "Endoscopic identification of a neoplastic polyp in the colon",
+                    "sent": "Endoscopic identification of a neoplastic polyp in the colon",
+                    "sent_id": 31
+                },
+                {
+                    "raw": "Neoplastic polyp observed in colon via endoscopy",
+                    "sent": "Neoplastic polyp observed in colon via endoscopy",
+                    "sent_id": 32
+                }
+            ],
+            "sent_ids": [
+                30,
+                31,
+                32
+            ],
+            "ann_id": 66,
+            "ref_id": 66
+        },
+        {
+            "mask_file": "24_endoscope_colon_non-neoplastic+polyp.png",
+            "area": 2415,
+            "iscrowd": 0,
+            "image_id": 24,
+            "bbox": [
+                551,
+                756,
+                54,
+                57
+            ],
+            "category_id": 12,
+            "id": 67,
+            "slice_ratio": 1.0,
+            "file_name": "24_endoscope_colon.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "non-neoplastic polyp in colon endoscope",
+                    "sent": "non-neoplastic polyp in colon endoscope",
+                    "sent_id": 33
+                },
+                {
+                    "raw": "Non-malignant polyp observed in colon via endoscopy",
+                    "sent": "Non-malignant polyp observed in colon via endoscopy",
+                    "sent_id": 34
+                },
+                {
+                    "raw": "Endoscopic view of a non-neoplastic polyp in the colon",
+                    "sent": "Endoscopic view of a non-neoplastic polyp in the colon",
+                    "sent_id": 35
+                }
+            ],
+            "sent_ids": [
+                33,
+                34,
+                35
+            ],
+            "ann_id": 67,
+            "ref_id": 67
+        },
+        {
+            "mask_file": "24_endoscope_colon_polyp.png",
+            "area": 27859,
+            "iscrowd": 0,
+            "image_id": 24,
+            "bbox": [
+                383,
+                132,
+                222,
+                681
+            ],
+            "category_id": 12,
+            "id": 68,
+            "slice_ratio": 1.0,
+            "file_name": "24_endoscope_colon.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "polyp in colon endoscope",
+                    "sent": "polyp in colon endoscope",
+                    "sent_id": 36
+                }
+            ],
+            "sent_ids": [
+                36
+            ],
+            "ann_id": 68,
+            "ref_id": 68
+        },
+        {
+            "mask_file": "25_dermoscopy_skin_melanoma.png",
+            "area": 72478,
+            "iscrowd": 0,
+            "image_id": 25,
+            "bbox": [
+                338,
+                449,
+                362,
+                284
+            ],
+            "category_id": 12,
+            "id": 69,
+            "slice_ratio": 1.0,
+            "file_name": "25_dermoscopy_skin.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "melanoma in skin dermoscope",
+                    "sent": "melanoma in skin dermoscope",
+                    "sent_id": 29
+                },
+                {
+                    "raw": "melanoma in skin dermoscopy",
+                    "sent": "melanoma in skin dermoscopy",
+                    "sent_id": 30
+                }
+            ],
+            "sent_ids": [
+                29,
+                30
+            ],
+            "ann_id": 69,
+            "ref_id": 69
+        },
+        {
+            "mask_file": "26_OCT_retinal_edema.png",
+            "area": 6356,
+            "iscrowd": 0,
+            "image_id": 26,
+            "bbox": [
+                206,
+                412,
+                145,
+                57
+            ],
+            "category_id": 13,
+            "id": 70,
+            "slice_ratio": 1.0,
+            "file_name": "26_OCT_retinal.png",
+            "split": "test",
+            "sentences": [
+                {
+                    "raw": "edema in retinal OCT",
+                    "sent": "edema in retinal OCT",
+                    "sent_id": 10
+                }
+            ],
+            "sent_ids": [
+                10
+            ],
+            "ann_id": 70,
+            "ref_id": 70
+        }
+    ]
+}
