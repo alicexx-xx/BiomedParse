@@ -6,7 +6,7 @@ from create_annotations import *
 
 
 # provide the path to the dataset. There should be train, train_mask, test, test_mask under this folder
-targetpath = 'fine_tuning_HVSMR'
+targetpath = '/cluster/work/grlab/projects/tmp_xueqwang/fine_tuning_HVSMR'
 
 
 image_size = 1024
