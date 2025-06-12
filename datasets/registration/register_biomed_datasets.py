@@ -16,22 +16,9 @@ from detectron2.utils.file_io import PathManager
 
 _PREDEFINED_SPLITS_BIOMED = {}
 
-# example of registering a dataset
-datasets = ['BiomedParseData-Demo', ]   # provide name of the dataset under biomedparse_datasets
-splits = ['demo']    # provide split name, e.g., train, test, val. Here there is only one 'demo' split in the example demo dataset
-
-# Here we register all the splits of the dataset
-for name in datasets:
-    for split in splits:
-        dataname = f'biomed_{name.replace("/", "-")}_{split}'
-        image_root = f"{name}/{split}"
-        ann_root = f"{name}/{split}.json"
-        _PREDEFINED_SPLITS_BIOMED[dataname] = (image_root, ann_root)
-# The resulting dataset name is: biomed_BiomedParseData-Demo_demo
-
-# # Add your dataset here
-# datasets = ['YOUR_DATASET_NAME', ]   # provide name of the dataset under biomedparse_datasets
-# splits = ['train', 'test']    # provide split name, e.g., train, test, val
+# # example of registering a dataset
+# datasets = ['BiomedParseData-Demo', ]   # provide name of the dataset under biomedparse_datasets
+# splits = ['demo']    # provide split name, e.g., train, test, val. Here there is only one 'demo' split in the example demo dataset
 
 # # Here we register all the splits of the dataset
 # for name in datasets:
@@ -40,7 +27,20 @@ for name in datasets:
 #         image_root = f"{name}/{split}"
 #         ann_root = f"{name}/{split}.json"
 #         _PREDEFINED_SPLITS_BIOMED[dataname] = (image_root, ann_root)
-# # The resulting dataset names are: biomed_YOUR_DATASET_NAME_train, biomed_YOUR_DATASET_NAME_test
+# # The resulting dataset name is: biomed_BiomedParseData-Demo_demo
+
+# Add your dataset here
+datasets = ['fine_tuning_HVSMR', ]   # provide name of the dataset under biomedparse_datasets
+splits = ['train', 'test']    # provide split name, e.g., train, test, val
+
+# Here we register all the splits of the dataset
+for name in datasets:
+    for split in splits:
+        dataname = f'biomed_{name.replace("/", "-")}_{split}'
+        image_root = f"{name}/{split}"
+        ann_root = f"{name}/{split}.json"
+        _PREDEFINED_SPLITS_BIOMED[dataname] = (image_root, ann_root)
+# The resulting dataset names are: biomed_YOUR_DATASET_NAME_train, biomed_YOUR_DATASET_NAME_test
 
 
 def get_metadata():

@@ -231,13 +231,13 @@ ATTENTION_ARCH:
 
 DATASETS:
   TRAIN: [
-  'biomed_BiomedParseData-Demo_demo'    # Add your registered training datasets here
+  'biomed_fine_tuning_HVSMR_train'    # Add your registered training datasets here
   ]
 
 
 
   TEST:  [
-  'biomed_BiomedParseData-Demo_demo'   # Add your registered test datasets here
+  'biomed_fine_tuning_HVSMR_test'   # Add your registered test datasets here
   ]
   
   CLASS_CONCAT: false
