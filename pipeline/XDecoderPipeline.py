@@ -44,6 +44,15 @@ class XDecoderPipeline:
     def initialize_model(self):
         model_name = "default"
         model = build_model(self._opt)
+
+        # FREEZE parameters (refer to SOLVER in config and xdecoder_trainer line 75)
+        # for param in model.parameters():
+        #     param.requires_grad = True
+        # for param in model.backbone.parameters():
+        #     param.requires_grad = False
+        # for param in model.sem_seg_head.predictor.lang_encoder.parameters():
+        #     param.requires_grad = False
+
         model.train()
 
         if is_main_process():
