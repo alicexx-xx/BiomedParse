@@ -15,7 +15,7 @@ import numpy as np
 
 from utilities.arguments import load_opt_command
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(filename='/cluster/work/grlab/projects/tmp_xueqwang/biomedparse_ft.log', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # def init_wandb(args, job_dir, entity='YOUR_USER_NAME', project='YOUR_PROJECT_NAME', job_name='tmp'):
