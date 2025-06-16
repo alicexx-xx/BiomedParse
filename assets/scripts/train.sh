@@ -21,9 +21,6 @@ CUDA_VISIBLE_DEVICES=0 mpirun -n 1 python entry.py train \
             TRAIN.BATCH_SIZE_PER_GPU 4 \
             SOLVER.MAX_NUM_EPOCHS 20 \
             SOLVER.BASE_LR 0.00001 \
-            # SOLVER.FIX_PARAM.backbone False \
-            # SOLVER.FIX_PARAM.lang_encoder False \
-            # SOLVER.FIX_PARAM.pixel_decoder False \
             MODEL.DECODER.COST_SPATIAL.CLASS_WEIGHT 1.0 \
             MODEL.DECODER.COST_SPATIAL.MASK_WEIGHT 1.0 \
             MODEL.DECODER.COST_SPATIAL.DICE_WEIGHT 1.0 \
