@@ -1,5 +1,5 @@
 export DETECTRON2_DATASETS=biomedparse_datasets/
-export DATASET=biomedparse_datasets/
+export DATASET=/cluster/work/grlab/projects/tmp_xueqwang/
 export DATASET2=biomedparse_datasets/
 export VLDATASET=biomedparse_datasets/
 export PATH=$PATH:biomedparse_datasets/coco_caption/jre1.8.0_321/bin/
