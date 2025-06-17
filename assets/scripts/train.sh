@@ -35,4 +35,4 @@ CUDA_VISIBLE_DEVICES=0 mpirun -n 1 python entry.py train \
             ATTENTION_ARCH.QUERY_NUMBER 3 \
             STROKE_SAMPLER.MAX_CANDIDATE 10 \
             WEIGHT True \
-            RESUME_FROM pretrained/biomedparse_v1.pt
+            RESUME_FROM /cluster/customapps/biomed/grlab/users/xueqwang/hf_models/microsoft/biomedparse_v1.pt
