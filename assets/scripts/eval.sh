@@ -17,6 +17,6 @@ CUDA_VISIBLE_DEVICES=0 mpirun -n 1 python entry.py evaluate \
             FP16 True \
             WEIGHT True \
             STANDARD_TEXT_FOR_EVAL False \
-            RESUME_FROM /cluster/work/grlab/projects/tmp_xueqwang/biomed_seg_lang_v1.yaml_conf~/run_1/00001220/default/model_state_dict.pt
+            RESUME_FROM /cluster/work/grlab/projects/tmp_xueqwang/biomed_seg_lang_v1.yaml_conf~/run_1/00001037/default/model_state_dict.pt
 
             
