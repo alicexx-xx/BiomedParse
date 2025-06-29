@@ -318,7 +318,7 @@ SOLVER:
   FIX_PARAM:
     backbone: True
     lang_encoder: True
-    pixel_decoder: True
+    pixel_decoder: False
   WEIGHT_DECAY_NORM: 0.0
   WEIGHT_DECAY_EMBED: 0.0
   CLIP_GRADIENTS:
