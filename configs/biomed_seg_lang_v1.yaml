@@ -302,7 +302,7 @@ BioMed:
 
 # Detectron2 training config for optimizer and lr scheduler
 SOLVER:
-  BASE_LR: 0.0001
+  BASE_LR: 0.00005
   STEPS: [0.88889, 0.96296]
   MAX_ITER: 1
   GAMMA: 0.1
