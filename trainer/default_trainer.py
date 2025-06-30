@@ -303,3 +303,8 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
 
         # if not self.opt.get('SAVE_CHECKPOINT', True):
         #     self.save_checkpoint(self.train_params['num_updates'])
+        logger.info(f"instances in the last batch:")
+        logger.info([d['instances'] for d in batch])
+
+        logger.info(f"num of queries in output:")
+        logger.info(self.raw_models['default'].model.sem_seg_head.predictor.attention_data.query_index)

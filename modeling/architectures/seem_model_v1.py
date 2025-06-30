@@ -365,6 +365,7 @@ class GeneralizedSEEM(nn.Module):
                     outputs = self.sem_seg_head.predictor(multi_scale_features, mask_features, extra=extra, task='spatial')
                     extra.update(outputs)
                     extra.update(self.prepare_next_spaital_mask(extra, batched_inputs))
+                    print("iteratively generating synthetic spatial prompt!")
 
         outputs = self.sem_seg_head.predictor(multi_scale_features, mask_features, extra=extra, task='seg')
 
