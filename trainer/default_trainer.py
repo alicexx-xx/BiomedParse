@@ -308,3 +308,8 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
 
         logger.info(f"num of queries in output:")
         logger.info(self.raw_models['default'].model.sem_seg_head.predictor.attention_data.query_index)
+
+        logger.info(f"Device: {torch.cuda.get_device_name(0)}")
+        logger.info(f"Total Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.2f} GB")
+        logger.info(f"Allocated: {torch.cuda.memory_allocated(0) / 1024**3:.2f} GB")
+        logger.info(f"Cached:    {torch.cuda.memory_reserved(0) / 1024**3:.2f} GB")
