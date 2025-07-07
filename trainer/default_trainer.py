@@ -228,6 +228,7 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
         self.init_train()
         current_optim_steps = self._get_and_validate_current_optim_steps()
         num_epochs = self.opt['SOLVER']['MAX_NUM_EPOCHS']
+        val_mDice = []
 
         if self.opt.get('EVAL_AT_START', False):
             results = self._eval_on_set(self.save_folder)
@@ -286,13 +287,15 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
                                         f"total items[{self.train_params['total_batch_size']}] "
                                         f"mini batches[{self.train_params['num_updates']:6}] "
                                         f"memory[{memory:.0f}] "
-                                        f"epoch remaining[{str((datetime.now() - epoch_start_time) / (batch_idx + 1) * (self.train_params['updates_per_epoch'] - batch_idx - 1)).split('.')[0]}]")
+                                        f"epoch remaining[{str((datetime.now() - epoch_start_time) / (batch_idx + 1) * (self.train_params['updates_per_epoch'] - batch_idx - 1)).split('.')[0]}] "
+                                        f"num of queries in output:{self.raw_models['default'].model.sem_seg_head.predictor.attention_data.query_index} ")
 
                 # evaluate and save ckpt every epoch
                 if batch_idx + 1 == self.train_params['updates_per_epoch']:
                     if self.opt.get('SAVE_CHECKPOINT', True):
                         self.save_checkpoint(self.train_params['num_updates'])
                     results = self._eval_on_set(self.save_folder)
+                    val_mDice.append((epoch+1, results['biomed_fine_tuning_HVSMR_val/grounding_refcoco']['grounding']['mDice']))
                     # if self.opt['rank'] == 0 and self.opt['WANDB']:
                     #     wandb.log(results)
                     break
@@ -301,13 +304,16 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
             logger.info(f"PROGRESS: {100.0 * (epoch + 1) / num_epochs:.2f}%")
             logger.info(f"Config files are at {self.opt['conf_files']}")
 
-        # if not self.opt.get('SAVE_CHECKPOINT', True):
-        #     self.save_checkpoint(self.train_params['num_updates'])
-        logger.info(f"instances in the last batch:")
-        logger.info([d['instances'] for d in batch])
+        if not self.opt.get('SAVE_CHECKPOINT', True):
+            self.save_checkpoint(self.train_params['num_updates'])
+        logger.info(f"------------------------------")
+        logger.info(f"Val Scores")
+        logger.info(f"------------------------------")
+        logger.info(val_mDice)
 
-        logger.info(f"num of queries in output:")
-        logger.info(self.raw_models['default'].model.sem_seg_head.predictor.attention_data.query_index)
+        logger.info(f"------------------------------")
+        logger.info(f"GPU Usage")
+        logger.info(f"------------------------------")
 
         logger.info(f"Device: {torch.cuda.get_device_name(0)}")
         logger.info(f"Total Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.2f} GB")
