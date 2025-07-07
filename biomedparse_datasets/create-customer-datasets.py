@@ -124,7 +124,7 @@ if __name__ == "__main__":
     # Get the standard COCO JSON format
     coco_format = get_coco_json_format()
 
-    for keyword in ['train', 'test']:
+    for keyword in ['train','val', 'test']:
         mask_path = os.path.join(targetpath, "{}_mask/".format(keyword))
         
         # Create category section

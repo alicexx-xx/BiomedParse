@@ -31,7 +31,7 @@ _PREDEFINED_SPLITS_BIOMED = {}
 
 # Add your dataset here
 datasets = ['fine_tuning_HVSMR', ]   # provide name of the dataset under biomedparse_datasets
-splits = ['train', 'test']    # provide split name, e.g., train, test, val
+splits = ['train', 'val']    # provide split name, e.g., train, test, val
 
 # Here we register all the splits of the dataset
 for name in datasets:
