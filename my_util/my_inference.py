@@ -82,7 +82,6 @@ def non_maxima_suppression(masks, p_values):
             overlap_area = (mask_region * (nms_masks[t]>0.5)).sum()
             if overlap_area > 0.5 * mask_area:
                 mask_overlap = True
-                print(f"Overlap found! {target} removed due to a lower p value than {t}")
                 break
         if not mask_overlap:
             nms_masks[target] = mask
@@ -110,7 +109,6 @@ def non_maxima_suppression_sigmoids(masks, sigmoids):
             overlap_area = (mask_region * (nms_masks[t]>0.5)).sum()
             if overlap_area > 0.5 * mask_area:
                 mask_overlap = True
-                print(f"Overlap found! {target} removed due to a lower average sigmoids than {t}")
                 break
         if not mask_overlap:
             nms_masks[target] = mask
