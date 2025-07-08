@@ -229,6 +229,9 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
         current_optim_steps = self._get_and_validate_current_optim_steps()
         num_epochs = self.opt['SOLVER']['MAX_NUM_EPOCHS']
         val_mDice = []
+        best_val_mDice = 0
+        patience = 0
+        patience_max = 5
 
         if self.opt.get('EVAL_AT_START', False):
             results = self._eval_on_set(self.save_folder)
@@ -303,6 +306,16 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
             logger.info(f"This epoch takes {datetime.now() - epoch_start_time}")
             logger.info(f"PROGRESS: {100.0 * (epoch + 1) / num_epochs:.2f}%")
             logger.info(f"Config files are at {self.opt['conf_files']}")
+
+            val_mdice_epoch = val_mDice[-1][1]
+            if val_mdice_epoch >= best_val_mDice:
+                best_val_mDice = val_mdice_epoch
+                patience = 0
+            else:
+                patience += 1
+
+            if patience >= patience_max:
+                break
 
         if not self.opt.get('SAVE_CHECKPOINT', True):
             self.save_checkpoint(self.train_params['num_updates'])
