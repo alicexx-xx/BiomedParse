@@ -33,6 +33,9 @@ from .utils_trainer import UtilsTrainer
 from .utils.misc import *
 from .utils.serialization import JSONEncoder, filter_jsonable
 
+from peft import get_peft_model
+from peft import LoraConfig, TaskType
+
 logger = logging.getLogger(__name__)
 
 
@@ -179,6 +182,14 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
         # move models to the device
         for module_name in self.model_names:
             self.raw_models[module_name].to(self.opt['device'])
+
+            lora_modules = []
+            for name, module in self.raw_models[module_name].model.sem_seg_head.named_modules():
+                if isinstance(module, (nn.Linear, nn.Embedding)) and "lang_encoder" not in name:
+                    lora_modules.append(f"model.sem_seg_head.{name}")
+
+            peft_config = LoraConfig(inference_mode=False, r=8, lora_alpha=32, lora_dropout=0.1, target_modules=lora_modules)
+            self.raw_models[module_name] = get_peft_model(self.raw_models[module_name], peft_config)
 
         self.train_dataloaders = self.pipeline.get_dataloaders(self, 'train', is_evaluation=False)
         self.train_params = {
