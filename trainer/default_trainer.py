@@ -311,14 +311,15 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
             if val_mdice_epoch >= best_val_mDice:
                 best_val_mDice = val_mdice_epoch
                 patience = 0
+                self.save_checkpoint(1)
             else:
                 patience += 1
 
             if patience >= patience_max:
                 break
 
-        if not self.opt.get('SAVE_CHECKPOINT', True):
-            self.save_checkpoint(self.train_params['num_updates'])
+        # if not self.opt.get('SAVE_CHECKPOINT', True):
+        #     self.save_checkpoint(self.train_params['num_updates'])
         logger.info(f"------------------------------")
         logger.info(f"Val Scores")
         logger.info(f"------------------------------")
