@@ -303,8 +303,7 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
                                         f"total items[{self.train_params['total_batch_size']}] "
                                         f"mini batches[{self.train_params['num_updates']:6}] "
                                         f"memory[{memory:.0f}] "
-                                        f"epoch remaining[{str((datetime.now() - epoch_start_time) / (batch_idx + 1) * (self.train_params['updates_per_epoch'] - batch_idx - 1)).split('.')[0]}] "
-                                        f"num of queries in output:{self.raw_models['default'].model.sem_seg_head.predictor.attention_data.query_index} ")
+                                        f"epoch remaining[{str((datetime.now() - epoch_start_time) / (batch_idx + 1) * (self.train_params['updates_per_epoch'] - batch_idx - 1)).split('.')[0]}] ")
 
                 # evaluate and save ckpt every epoch
                 if batch_idx + 1 == self.train_params['updates_per_epoch']:
