@@ -136,7 +136,7 @@ def biomedparse_inference_data_prep(img_data, slice_idx, transform_func):
     return width, height, image_resize, img_data_slice
 
 
-def biomedparse_inference_masks(data, results, extra, model):
+def biomedparse_inference_masks(data, results, extra, model, lora = False):
     """
     Inference
 
@@ -151,7 +151,10 @@ def biomedparse_inference_masks(data, results, extra, model):
     t_emb = t_emb / (t_emb.norm(dim=-1, keepdim=True) + 1e-7)
     v_emb = v_emb / (v_emb.norm(dim=-1, keepdim=True) + 1e-7)
     
-    temperature = model.model.sem_seg_head.predictor.lang_encoder.logit_scale
+    if not lora:
+        temperature = model.model.sem_seg_head.predictor.lang_encoder.logit_scale
+    else:
+        temperature = model.base_model.model.model.sem_seg_head.predictor.lang_encoder.logit_scale
     out_prob = vl_similarity(v_emb, t_emb, temperature=temperature)
 
     match_id = out_prob.max(0)[1]
@@ -185,7 +188,7 @@ def biomedparse_inference_all_prompts(width, height, image_resize, img_data_slic
             results, image_size, extra = model.model.evaluate_demo(batched_inputs)
         else:
             results, image_size, extra = model.base_model.model.model.evaluate_demo(batched_inputs)
-    pred_mask_prob, pred_masks_pos = biomedparse_inference_masks(data, results, extra, model)
+    pred_mask_prob, pred_masks_pos = biomedparse_inference_masks(data, results, extra, model, lora=lora)
 
     predicts = {}
     p_values = {}
@@ -235,7 +238,7 @@ def biomedparse_inference_single_prompt(width, height, image_resize, img_data_sl
                 results, image_size, extra = model.model.evaluate_demo(batched_inputs)
             else:
                 results, image_size, extra = model.base_model.model.model.evaluate_demo(batched_inputs)
-        pred_mask_prob, pred_masks_pos = biomedparse_inference_masks(data, results, extra, model)
+        pred_mask_prob, pred_masks_pos = biomedparse_inference_masks(data, results, extra, model, lora=lora)
 
         if batch_targets in BIOMED_OBJECTS['MRI-Cardiac']:
             adj_p_value = check_mask_stats(image_resize, pred_mask_prob[0]*255, 'MRI-Cardiac', batch_targets)
@@ -274,7 +277,7 @@ def process_biomedparse_mask(pred_seg, targets_color_dict=targets_color_dict, co
         mask[pred_seg[s]>0.5] = colors_list[mask_color]+[128]
     return mask
 
-def load_model(pretrained_pth, lora = False, ft_lora_pth='', lora_base_pth = '/cluster/customapps/biomed/grlab/users/xueqwang/hf_models/microsoft/biomedparse_v1.pt'):
+def load_model(pretrained_pth, lora = False, ft_lora_pth=''):
     """
     load model (IN EVALUATION MODE) using corresponding checkpoint
     """
@@ -309,7 +312,7 @@ def load_model(pretrained_pth, lora = False, ft_lora_pth='', lora_base_pth = '/c
         with torch.no_grad():
             model.model.sem_seg_head.predictor.lang_encoder.get_text_embeddings(BIOMED_CLASSES + ["background"], is_eval=True)
     else:
-        model = BaseModel(opt, build_model(opt)).from_pretrained(lora_base_pth).cuda()
+        model = BaseModel(opt, build_model(opt)).from_pretrained(pretrained_pth).cuda()
         with torch.no_grad():
             model.model.sem_seg_head.predictor.lang_encoder.get_text_embeddings(BIOMED_CLASSES + ["background"], is_eval=True)
         model = PeftModel.from_pretrained(model, ft_lora_pth)
