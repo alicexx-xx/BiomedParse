@@ -183,14 +183,6 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
         for module_name in self.model_names:
             self.raw_models[module_name].to(self.opt['device'])
 
-            lora_modules = []
-            for name, module in self.raw_models[module_name].model.sem_seg_head.named_modules():
-                if isinstance(module, (nn.Linear, nn.Embedding)) and "lang_encoder" not in name:
-                    lora_modules.append(f"model.sem_seg_head.{name}")
-
-            peft_config = LoraConfig(inference_mode=False, r=8, lora_alpha=32, lora_dropout=0.1, target_modules=lora_modules)
-            self.raw_models[module_name] = get_peft_model(self.raw_models[module_name], peft_config)
-
         self.train_dataloaders = self.pipeline.get_dataloaders(self, 'train', is_evaluation=False)
         self.train_params = {
                              "updates_per_epoch": len(self.train_dataloaders),
@@ -210,14 +202,24 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
         if self.opt['CUDA']:
             torch.cuda.empty_cache()
 
-        self.create_optimizer_and_scheduler()
-        self.models = {model_name: self.raw_models[model_name] for model_name in self.model_names}
-        self._initialize_ddp()
-
         if self.opt.get('WEIGHT', False):
             self.load_weight(self.opt['RESUME_FROM'], must_exist=True)
         if self.opt.get('RESUME', False):
             self.load_checkpoint(self.opt['RESUME_FROM'], must_exist=True)
+
+        # move models to the device
+        for module_name in self.model_names:
+            lora_modules = []
+            for name, module in self.raw_models[module_name].model.sem_seg_head.named_modules():
+                if isinstance(module, (nn.Linear, nn.Embedding)) and "lang_encoder" not in name:
+                    lora_modules.append(f"model.sem_seg_head.{name}")
+
+            peft_config = LoraConfig(inference_mode=False, r=8, lora_alpha=32, lora_dropout=0.1, target_modules=lora_modules)
+            self.raw_models[module_name] = get_peft_model(self.raw_models[module_name], peft_config)
+
+        self.create_optimizer_and_scheduler()
+        self.models = {model_name: self.raw_models[model_name] for model_name in self.model_names}
+        self._initialize_ddp()
 
         ######################
         # Start the main loop
