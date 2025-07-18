@@ -274,7 +274,7 @@ def process_biomedparse_mask(pred_seg, targets_color_dict=targets_color_dict, co
         mask[pred_seg[s]>0.5] = colors_list[mask_color]+[128]
     return mask
 
-def load_model(pretrained_pth, lora = False, ft_lora_pth=''):
+def load_model(pretrained_pth, lora = False, ft_lora_pth='', lora_base_pth = '/cluster/customapps/biomed/grlab/users/xueqwang/hf_models/microsoft/biomedparse_v1.pt'):
     """
     load model (IN EVALUATION MODE) using corresponding checkpoint
     """
@@ -304,12 +304,14 @@ def load_model(pretrained_pth, lora = False, ft_lora_pth=''):
     # pretrained_pth = '/cluster/customapps/biomed/grlab/users/xueqwang/hf_models/microsoft/biomedparse_v1.pt'
     # model = BaseModel(opt, build_model(opt)).from_pretrained(pretrained_pth).train().cuda()
     
-    model = BaseModel(opt, build_model(opt)).from_pretrained(pretrained_pth).cuda()
-    with torch.no_grad():
-        model.model.sem_seg_head.predictor.lang_encoder.get_text_embeddings(BIOMED_CLASSES + ["background"], is_eval=True)
     if not lora:
-        model.eval()
+        model = BaseModel(opt, build_model(opt)).from_pretrained(pretrained_pth).eval().cuda()
+        with torch.no_grad():
+            model.model.sem_seg_head.predictor.lang_encoder.get_text_embeddings(BIOMED_CLASSES + ["background"], is_eval=True)
     else:
+        model = BaseModel(opt, build_model(opt)).from_pretrained(lora_base_pth).cuda()
+        with torch.no_grad():
+            model.model.sem_seg_head.predictor.lang_encoder.get_text_embeddings(BIOMED_CLASSES + ["background"], is_eval=True)
         model = PeftModel.from_pretrained(model, ft_lora_pth)
         model.eval()
 
