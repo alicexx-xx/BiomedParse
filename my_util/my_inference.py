@@ -23,6 +23,8 @@ from modeling.language.loss import vl_similarity
 
 from detectron2.data.datasets.builtin_meta import COCO_CATEGORIES
 
+from peft import PeftModel
+
 colors_list = [(np.array(color['color'])).tolist() for color in COCO_CATEGORIES]
 color_codes = [f'#{color[0]:02x}{color[1]:02x}{color[2]:02x}' for color in colors_list]
 
@@ -161,7 +163,7 @@ def biomedparse_inference_masks(data, results, extra, model):
 
     return pred_mask_prob, pred_masks_pos
 
-def biomedparse_inference_all_prompts(width, height, image_resize, img_data_slice, image_targets, model, remove_overlapping_by = 'p-val'):
+def biomedparse_inference_all_prompts(width, height, image_resize, img_data_slice, image_targets, model, remove_overlapping_by = 'p-val', lora = False):
     """
     Recognition by performing inference once with all prompts
 
@@ -179,7 +181,10 @@ def biomedparse_inference_all_prompts(width, height, image_resize, img_data_slic
     batched_inputs = [data]
     
     with torch.no_grad():
-        results, image_size, extra = model.model.evaluate_demo(batched_inputs)
+        if not lora:
+            results, image_size, extra = model.model.evaluate_demo(batched_inputs)
+        else:
+            results, image_size, extra = model.base_model.model.model.evaluate_demo(batched_inputs)
     pred_mask_prob, pred_masks_pos = biomedparse_inference_masks(data, results, extra, model)
 
     predicts = {}
@@ -204,7 +209,7 @@ def biomedparse_inference_all_prompts(width, height, image_resize, img_data_slic
     return predicts_raw, masks
 
 
-def biomedparse_inference_single_prompt(width, height, image_resize, img_data_slice, image_targets, model, remove_overlapping_by = 'p-val'):
+def biomedparse_inference_single_prompt(width, height, image_resize, img_data_slice, image_targets, model, remove_overlapping_by = 'p-val', lora = False):
     """
     Recognition by performing inference iteratively with one prompt a time
 
@@ -226,7 +231,10 @@ def biomedparse_inference_single_prompt(width, height, image_resize, img_data_sl
         batched_inputs = [data]
 
         with torch.no_grad():
-            results, image_size, extra = model.model.evaluate_demo(batched_inputs)
+            if not lora:
+                results, image_size, extra = model.model.evaluate_demo(batched_inputs)
+            else:
+                results, image_size, extra = model.base_model.model.model.evaluate_demo(batched_inputs)
         pred_mask_prob, pred_masks_pos = biomedparse_inference_masks(data, results, extra, model)
 
         if batch_targets in BIOMED_OBJECTS['MRI-Cardiac']:
@@ -266,7 +274,7 @@ def process_biomedparse_mask(pred_seg, targets_color_dict=targets_color_dict, co
         mask[pred_seg[s]>0.5] = colors_list[mask_color]+[128]
     return mask
 
-def load_model(pretrained_pth):
+def load_model(pretrained_pth, lora = False, ft_lora_pth=''):
     """
     load model (IN EVALUATION MODE) using corresponding checkpoint
     """
@@ -296,8 +304,13 @@ def load_model(pretrained_pth):
     # pretrained_pth = '/cluster/customapps/biomed/grlab/users/xueqwang/hf_models/microsoft/biomedparse_v1.pt'
     # model = BaseModel(opt, build_model(opt)).from_pretrained(pretrained_pth).train().cuda()
     
-    model = BaseModel(opt, build_model(opt)).from_pretrained(pretrained_pth).eval().cuda()
+    model = BaseModel(opt, build_model(opt)).from_pretrained(pretrained_pth).cuda()
     with torch.no_grad():
         model.model.sem_seg_head.predictor.lang_encoder.get_text_embeddings(BIOMED_CLASSES + ["background"], is_eval=True)
+    if not lora:
+        model.eval()
+    else:
+        model = PeftModel.from_pretrained(model, ft_lora_pth)
+        model.eval()
 
     return model
