@@ -114,13 +114,13 @@ class UtilsTrainer(DistributedTrainer):
                             'optimizer': self.optimizers[module_name].state_dict(),
                             'lr_scheduler': self.lr_schedulers[module_name].state_dict(),
                             'amp_state': amp_state,}
-                torch.save(state, save_path)
+                # torch.save(state, save_path)
 
         if self.opt['rank'] == 0:
             save_path = os.path.join(save_dir, 'trainer_states.pt')
             trainer_state = {'train_loss': self.train_loss,
                                 'train_params': self.train_params,}
-            torch.save(trainer_state, save_path)
+            # torch.save(trainer_state, save_path)
 
         num_retries = 0
         while num_retries < 3:
@@ -131,7 +131,7 @@ class UtilsTrainer(DistributedTrainer):
                                 'torch_random': torch.get_rng_state(),
                                 'torch_cuda_random': torch.cuda.get_rng_state(device=self.opt['device']) if self.opt['CUDA'] else None
                                 }
-                torch.save(random_state, random_state_path)
+                # torch.save(random_state, random_state_path)
                 num_retries = 3
             except Exception as err:
                 num_retries += 1
@@ -148,8 +148,8 @@ class UtilsTrainer(DistributedTrainer):
             # save the latest checkpoint location to json file
             checkpoint_location = {'checkpoint_tag': tag,
                                     'checkpoint_path': os.path.relpath(self.save_folder, start=self.opt['SAVE_DIR'])}
-            with open(os.path.join(self.opt['SAVE_DIR'], f"resume_checkpoint.json"), 'w', encoding='utf-8') as f:
-                json.dump(checkpoint_location, f, cls=JSONEncoder)
+            # with open(os.path.join(self.opt['SAVE_DIR'], f"resume_checkpoint.json"), 'w', encoding='utf-8') as f:
+            #     json.dump(checkpoint_location, f, cls=JSONEncoder)
 
         logger.warning(f'Finished saving checkpoint and model to {save_dir}.')
 
