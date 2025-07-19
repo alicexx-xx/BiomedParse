@@ -32,6 +32,8 @@ from .utils.misc import *
 from .utils.serialization import JSONEncoder, filter_jsonable
 from utilities.distributed import get_world_size
 
+from safetensors.torch import save_file
+
 logger = logging.getLogger(__name__)
 
 
@@ -143,6 +145,12 @@ class UtilsTrainer(DistributedTrainer):
             for module_name in self.model_names:
                 module_save_dir = os.path.join(save_dir, module_name)
                 self.raw_models[module_name].save_pretrained(module_save_dir)
+
+                unfrozen_state_dict = {
+                    k: v.cpu() for k, v in self.raw_models[module_name].named_parameters() if v.requires_grad and "lora_" not in k
+                }
+                save_file(unfrozen_state_dict, os.path.join(module_save_dir, 'fine_tuned_base_model_params.safetensors'))
+
 
         if self.opt['rank'] == 0:
             # save the latest checkpoint location to json file
