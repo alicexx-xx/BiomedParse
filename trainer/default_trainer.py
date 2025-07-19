@@ -35,6 +35,7 @@ from .utils.serialization import JSONEncoder, filter_jsonable
 
 from peft import get_peft_model
 from peft import LoraConfig, TaskType
+import transformers
 
 logger = logging.getLogger(__name__)
 
@@ -211,11 +212,25 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
         for module_name in self.model_names:
             lora_modules = []
             for name, module in self.raw_models[module_name].model.sem_seg_head.named_modules():
-                if isinstance(module, (nn.Linear, nn.Embedding)) and "lang_encoder" not in name:
+                if isinstance(module, (nn.Linear, nn.Embedding, nn.Conv2d, transformers.pytorch_utils.Conv1D)) and "lang_encoder" not in name:
                     lora_modules.append(f"model.sem_seg_head.{name}")
+            
+            ft_params = []
+            for name, param in self.raw_models[module_name].model.sem_seg_head.named_parameters():
+                if not [m for m in lora_modules if m[0] in f"model.sem_seg_head.{name}"] and "lang_encoder" not in name and param.requires_grad:
+                     ft_params.append(f"sem_seg_head.{name}")
 
-            peft_config = LoraConfig(inference_mode=False, r=8, lora_alpha=32, lora_dropout=0.1, target_modules=lora_modules)
+            peft_config = LoraConfig(inference_mode=False, r=16, lora_alpha=32, lora_dropout=0.1, target_modules=lora_modules)
             self.raw_models[module_name] = get_peft_model(self.raw_models[module_name], peft_config)
+            for p in ft_params:
+                param_location = p.split('.')
+                curr_mod = self.raw_models[module_name].base_model.model.model
+                for pl in param_location[:-1]:
+                    if pl in [str(n) for n in range(20)]:
+                        curr_mod = curr_mod[int(pl)]
+                    else:
+                        curr_mod = getattr(curr_mod, pl)
+                getattr(curr_mod, param_location[-1]).requires_grad = True
 
         self.create_optimizer_and_scheduler()
         self.models = {model_name: self.raw_models[model_name] for model_name in self.model_names}
@@ -233,6 +248,12 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
             logger.info(f"  Total train batch size (w. parallel, distributed & accumulation) = {self.opt['SOLVER']['MAX_NUM_EPOCHS'] * self.train_params['updates_per_epoch']}")
             logger.info(f"  Gradient Accumulation steps = {self.grad_acc_steps}")
             logger.info(f"  Total optimization steps = {self.opt['SOLVER']['MAX_NUM_EPOCHS'] * self.train_params['updates_per_epoch'] // self.grad_acc_steps}")
+            logger.info(f"  Trainable Parameters:")
+            for module_name in self.model_names:
+                self.raw_models[module_name].print_trainable_parameters()
+                for name, param in self.raw_models[module_name].named_parameters():
+                    if param.requires_grad:
+                        logger.info(f"  {name, param.shape}")
 
     def train(self):
         """
