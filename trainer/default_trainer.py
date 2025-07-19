@@ -212,12 +212,12 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
         for module_name in self.model_names:
             lora_modules = []
             for name, module in self.raw_models[module_name].model.sem_seg_head.named_modules():
-                if isinstance(module, (nn.Linear, nn.Embedding, nn.Conv2d, transformers.pytorch_utils.Conv1D)) and "lang_encoder" not in name:
+                if isinstance(module, (nn.Linear, nn.Embedding, nn.Conv2d, transformers.pytorch_utils.Conv1D)) and ("lang_encoder" not in name):
                     lora_modules.append(f"model.sem_seg_head.{name}")
             
             ft_params = []
             for name, param in self.raw_models[module_name].model.sem_seg_head.named_parameters():
-                if not [m for m in lora_modules if m[0] in f"model.sem_seg_head.{name}"] and "lang_encoder" not in name and param.requires_grad:
+                if (not [m for m in lora_modules if m in f"model.sem_seg_head.{name}"]) and ("lang_encoder" not in name) and isinstance(param, nn.parameter.Parameter):
                      ft_params.append(f"sem_seg_head.{name}")
 
             peft_config = LoraConfig(inference_mode=False, r=16, lora_alpha=32, lora_dropout=0.1, target_modules=lora_modules)
