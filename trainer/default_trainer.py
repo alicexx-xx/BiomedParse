@@ -212,15 +212,15 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
         for module_name in self.model_names:
             lora_modules = []
             for name, module in self.raw_models[module_name].model.sem_seg_head.named_modules():
-                if isinstance(module, (nn.Linear, nn.Embedding, nn.Conv2d, transformers.pytorch_utils.Conv1D)) and ("lang_encoder" not in name):
+                if isinstance(module, (nn.Linear, nn.Embedding, nn.Conv2d, transformers.pytorch_utils.Conv1D)):
                     lora_modules.append(f"model.sem_seg_head.{name}")
             
             ft_params = []
             for name, param in self.raw_models[module_name].model.sem_seg_head.named_parameters():
-                if (not [m for m in lora_modules if m in f"model.sem_seg_head.{name}"]) and ("lang_encoder" not in name) and isinstance(param, nn.parameter.Parameter):
+                if (not [m for m in lora_modules if m in f"model.sem_seg_head.{name}"]) and isinstance(param, nn.parameter.Parameter):
                      ft_params.append(f"sem_seg_head.{name}")
 
-            peft_config = LoraConfig(inference_mode=False, r=16, lora_alpha=32, lora_dropout=0.1, target_modules=lora_modules)
+            peft_config = LoraConfig(inference_mode=False, r=256, lora_alpha=384, lora_dropout=0.1, target_modules=lora_modules)
             self.raw_models[module_name] = get_peft_model(self.raw_models[module_name], peft_config)
             for p in ft_params:
                 param_location = p.split('.')
@@ -263,9 +263,9 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
         current_optim_steps = self._get_and_validate_current_optim_steps()
         num_epochs = self.opt['SOLVER']['MAX_NUM_EPOCHS']
         val_mDice = []
-        best_val_mDice = 0
+        best_val_mDice = []
         patience = 0
-        patience_max = 5
+        patience_max = 3
 
         if self.opt.get('EVAL_AT_START', False):
             results = self._eval_on_set(self.save_folder)
@@ -341,14 +341,18 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
             logger.info(f"Config files are at {self.opt['conf_files']}")
 
             val_mdice_epoch = val_mDice[-1][1]
-            if val_mdice_epoch >= best_val_mDice:
-                best_val_mDice = val_mdice_epoch
+            thres_mdice = 0 if len(best_val_mDice)==0 else np.mean(best_val_mDice)
+            if val_mdice_epoch >= thres_mdice:
+                if (len(best_val_mDice)>0) and (val_mdice_epoch > max(best_val_mDice)):
+                    self.save_checkpoint(1)
                 patience = 0
-                self.save_checkpoint(1)
             else:
                 patience += 1
+            best_val_mDice.append(val_mdice_epoch)
+            best_val_mDice = sorted(best_val_mDice, reverse=True)
+            best_val_mDice = best_val_mDice[:min(len(best_val_mDice), 3)]
 
-            if patience >= patience_max:
+            if patience > patience_max:
                 break
 
         # if not self.opt.get('SAVE_CHECKPOINT', True):

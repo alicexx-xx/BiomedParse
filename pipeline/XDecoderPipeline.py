@@ -55,8 +55,8 @@ class XDecoderPipeline:
 
         model.train()
 
-        if is_main_process():
-            logger.info(model)
+        # if is_main_process():
+        #     logger.info(model)
 
         raw_models = {model_name: BaseModel(self._opt, model)}
         return raw_models

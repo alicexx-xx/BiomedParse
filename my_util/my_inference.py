@@ -24,6 +24,7 @@ from modeling.language.loss import vl_similarity
 from detectron2.data.datasets.builtin_meta import COCO_CATEGORIES
 
 from peft import PeftModel
+from safetensors.torch import load_file
 
 colors_list = [(np.array(color['color'])).tolist() for color in COCO_CATEGORIES]
 color_codes = [f'#{color[0]:02x}{color[1]:02x}{color[2]:02x}' for color in colors_list]
@@ -277,7 +278,7 @@ def process_biomedparse_mask(pred_seg, targets_color_dict=targets_color_dict, co
         mask[pred_seg[s]>0.5] = colors_list[mask_color]+[128]
     return mask
 
-def load_model(pretrained_pth, lora = False, ft_lora_pth=''):
+def load_model(pretrained_pth, lora = False, ft_lora_pth='', ft_base_model_param=''):
     """
     load model (IN EVALUATION MODE) using corresponding checkpoint
     """
@@ -316,6 +317,9 @@ def load_model(pretrained_pth, lora = False, ft_lora_pth=''):
         with torch.no_grad():
             model.model.sem_seg_head.predictor.lang_encoder.get_text_embeddings(BIOMED_CLASSES + ["background"], is_eval=True)
         model = PeftModel.from_pretrained(model, ft_lora_pth)
+        if ft_base_model_param!='':
+            manually_unfrozen_params = load_file(ft_base_model_param)
+            model.load_state_dict(manually_unfrozen_params, strict=False)
         model.eval()
 
     return model
