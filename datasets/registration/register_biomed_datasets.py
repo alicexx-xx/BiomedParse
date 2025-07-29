@@ -78,13 +78,13 @@ def load_biomed_json(image_root, annot_json, metadata):
             if 'mask_file' not in ann:
                 ann['mask_file'] = image['file_name']
             ann['mask_file'] = os.path.join(mask_root, ann['mask_file'])
-            ret.append(
-                {
-                    "file_name": image_file,
-                    "image_id": image_id,
-                    "grounding_info": [ann],
-                }
-            )
+        ret.append(
+            {
+                "file_name": image_file,
+                "image_id": image_id,
+                "grounding_info": grounding_anno,
+            }
+        )
     assert len(ret), f"No images found in {image_root}!"
     assert PathManager.isfile(ret[0]["file_name"]), ret[0]["file_name"]
     return ret
