@@ -220,7 +220,7 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
                 if (not [m for m in lora_modules if m in f"model.sem_seg_head.{name}"]) and isinstance(param, nn.parameter.Parameter):
                      ft_params.append(f"sem_seg_head.{name}")
 
-            peft_config = LoraConfig(inference_mode=False, r=256, lora_alpha=384, lora_dropout=0.1, target_modules=lora_modules)
+            peft_config = LoraConfig(inference_mode=False, r=256, lora_alpha=512, lora_dropout=0.1, target_modules=lora_modules)
             self.raw_models[module_name] = get_peft_model(self.raw_models[module_name], peft_config)
             for p in ft_params:
                 param_location = p.split('.')
@@ -331,7 +331,7 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
                     if self.opt.get('SAVE_CHECKPOINT', True):
                         self.save_checkpoint(self.train_params['num_updates'])
                     results = self._eval_on_set(self.save_folder)
-                    val_mDice.append((epoch+1, results['biomed_fine_tuning_HVSMR_val/grounding_refcoco']['grounding']['mDice']))
+                    val_mDice.append((epoch+1, results['biomed_fine_tuning_HVSMR_large_val/grounding_refcoco']['grounding']['mDice']))
                     # if self.opt['rank'] == 0 and self.opt['WANDB']:
                     #     wandb.log(results)
                     break
@@ -341,7 +341,7 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
             logger.info(f"Config files are at {self.opt['conf_files']}")
 
             val_mdice_epoch = val_mDice[-1][1]
-            thres_mdice = 0 if len(best_val_mDice)==0 else np.mean(best_val_mDice)
+            thres_mdice = 0 if len(best_val_mDice)==0 else np.mean(best_val_mDice)-0.5
             if val_mdice_epoch >= thres_mdice:
                 if (len(best_val_mDice)>0) and (val_mdice_epoch > max(best_val_mDice)):
                     self.save_checkpoint(1)

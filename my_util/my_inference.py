@@ -12,6 +12,8 @@ import torch.nn.functional as F
 from torchvision import transforms
 from PIL import Image
 
+from skimage import transform
+
 from inference_utils.processing_utils import process_intensity_image
 from modeling.BaseModel import BaseModel
 from modeling import build_model
@@ -43,6 +45,79 @@ sg_targets = [
 ]
 # image_targets = BIOMED_OBJECTS['MRI-Cardiac']
 targets_color_dict = {t:c for t, c in zip(sg_targets, colors_selected)}
+
+def sliced_img_gt_retrieval(
+    file_name_img, file_name_seg, raw_data_folder, 
+    no_slices_per_sample, slice_freq):
+
+    raw_data_pth = os.path.join(raw_data_folder, file_name_img)
+    gt_pth = os.path.join(raw_data_folder, file_name_seg)
+    
+    raw_img = nib.load(raw_data_pth)
+    raw_gt = nib.load(gt_pth)
+    
+    raw_img_data = raw_img.get_fdata()
+    raw_gt_data = raw_gt.get_fdata()
+    
+    shape = raw_img_data.shape
+
+    if shape[-1] < no_slices_per_sample*slice_freq:
+        slice_index_last_dim = range(0, shape[-1], slice_freq)
+    else:
+        slice_index_last_dim = range(shape[-1]//2 - slice_freq*(no_slices_per_sample-1)//2, 1 + shape[-1]//2 + slice_freq*(no_slices_per_sample-1)//2, slice_freq)
+
+    sliced_img_data = raw_img_data[:,:,slice_index_last_dim]
+    sliced_gt_data = raw_gt_data[:,:,slice_index_last_dim]
+
+    return sliced_img_data, sliced_gt_data
+
+def pad_img_mask(img_data, seg_gt_data, slice_idx, gt_labels = [], intensify = False):
+
+    gt_labels = [l for l in gt_labels if l != 'na']
+    
+    img_data_slice = img_data[slice_idx]
+    seg_gt_data_slice = seg_gt_data[slice_idx]
+
+    if intensify:
+        # process image with intensity range 0.5-99.5 percentile
+        lower_bound, upper_bound = np.percentile(
+            img_data_slice[img_data_slice > 0], 0.5
+        ), np.percentile(img_data_slice[img_data_slice > 0], 99.5)
+        
+        img_data_slice = np.clip(img_data_slice, lower_bound, upper_bound)
+    
+    img_data_slice_pre = (img_data_slice - img_data_slice.min())/(img_data_slice.max()-img_data_slice.min()) * 255.0
+
+    shape = img_data_slice_pre.shape
+    if shape[0] > shape[1]:
+        pad = (shape[0]-shape[1])//2
+        pad_width = ((0,0), (pad, pad))
+    elif shape[0] < shape[1]:
+        pad = (shape[1]-shape[0])//2
+        pad_width = ((pad, pad), (0,0))
+    else:
+        pad_width = None
+    
+    if pad_width is not None:
+        img_data_slice_pre = np.pad(img_data_slice_pre, pad_width, 'constant', constant_values=0)
+        seg_gt_data_slice_padded = np.pad(seg_gt_data_slice, pad_width, 'constant', constant_values=0)
+        
+    image_size = 1024
+    resize_image = transform.resize(img_data_slice_pre, (image_size, image_size), order=3, 
+                                    mode='constant', preserve_range=True, anti_aliasing=True)
+    resize_image = resize_image.astype(np.uint8)
+    
+    # for masks, convert the original matrix to a list of binary masks
+    gt_masks = {}
+    for gt_idx, gt in enumerate(gt_labels):
+        mask_binary = (seg_gt_data_slice_padded == (gt_idx+1)).astype(int)
+        if mask_binary.max() > 0:
+            resize_mask = transform.resize(mask_binary, (image_size, image_size), order=0, 
+                                    mode='constant', preserve_range=True, anti_aliasing=True)
+
+            gt_masks[gt] = resize_mask.astype(np.uint8)
+    gt_mask_agg = np.max(np.stack([(gt_idx+1)*gt_masks.get(gt, np.zeros((image_size, image_size))) for gt_idx, gt in enumerate(gt_labels)], axis=-1), axis=-1)
+    return resize_image, gt_masks, gt_mask_agg
 
 def process_mask(gt_seg, label_target_dict, targets_color_dict=targets_color_dict, colors_list=colors_list):
     """
@@ -137,7 +212,7 @@ def biomedparse_inference_data_prep(img_data, slice_idx, transform_func):
     return width, height, image_resize, img_data_slice
 
 
-def biomedparse_inference_masks(data, results, extra, model, lora = False):
+def biomedparse_inference(data, model, lora = False):
     """
     Inference
 
@@ -145,6 +220,15 @@ def biomedparse_inference_masks(data, results, extra, model, lora = False):
         - pred_mask_prob [torch tensor]: predicted logits
         - pred_mask_pos [torch tensor]: binary mask derived from pred_mask_prob with threshold = 0.5
     """
+
+    batched_inputs = [data]
+
+    with torch.no_grad():
+        if not lora:
+            results, image_size, extra = model.model.evaluate_demo(batched_inputs)
+        else:
+            results, image_size, extra = model.base_model.model.model.evaluate_demo(batched_inputs)
+
     pred_masks = results['pred_masks'][0]
     v_emb = results['pred_captions'][0]
     t_emb = extra['grounding_class']
@@ -156,18 +240,60 @@ def biomedparse_inference_masks(data, results, extra, model, lora = False):
         temperature = model.model.sem_seg_head.predictor.lang_encoder.logit_scale
     else:
         temperature = model.base_model.model.model.sem_seg_head.predictor.lang_encoder.logit_scale
-    out_prob = vl_similarity(v_emb, t_emb, temperature=temperature)
+    
+    with torch.no_grad():
+        out_prob = vl_similarity(v_emb, t_emb, temperature=temperature)
 
-    match_id = out_prob.max(0)[1]
+    # match_id = out_prob.max(0)[1]
+    # classification_prob = out_prob.softmax(dim=1)[match_id,:]
+    classification_prob, match_id = out_prob.max(0)
+
     pred_masks_pos = pred_masks[match_id, :, :]
 
     pred_mask_prob = F.interpolate(pred_masks_pos[None,], (data['height'], data['width']), 
                                    mode='bilinear')[0,:,:data['height'],:data['width']].sigmoid().cpu().numpy()
     pred_masks_pos = (1*(pred_mask_prob > 0.5)).astype(np.uint8)
 
-    return pred_mask_prob, pred_masks_pos
+    return results, pred_mask_prob, pred_masks_pos, classification_prob
 
-def biomedparse_inference_all_prompts(width, height, image_resize, img_data_slice, image_targets, model, remove_overlapping_by = 'p-val', lora = False):
+
+def biomedparse_inference_postprocessing_sigmoid(pred_mask_prob, image_targets):
+
+    predicts = {}
+    sigmoid_avg = {}
+
+    for i, t in enumerate(image_targets):
+        predicts[t] = pred_mask_prob[i]
+        sigmoid_avg[t] = [pred_mask_prob[i][pred_mask_prob[i]>0.5].sum(), pred_mask_prob[i][pred_mask_prob[i]>0.5].mean()]
+    
+    predicts_raw = predicts.copy()
+    predicts = non_maxima_suppression_sigmoids(predicts, sigmoid_avg)
+    masks = combine_masks(predicts)
+
+    return predicts_raw, masks
+
+def biomedparse_inference_postprocessing_class_prob(pred_mask_prob, classification_prob, image_targets):
+
+    predicts = {}
+    class_prob = {}
+
+    for i, t in enumerate(image_targets):
+        predicts[t] = pred_mask_prob[i]
+        class_prob[t] = classification_prob[i].cpu().item()
+
+    predicts_raw = predicts.copy()
+    predicts = non_maxima_suppression(predicts, class_prob)
+    masks = combine_masks(predicts)
+
+    return predicts_raw, masks
+
+def biomedparse_inference_all_prompts(
+    width, height, 
+    image_resize, img_data_slice, 
+    image_targets, 
+    model, 
+    remove_overlapping_by = 'p-val', 
+    lora = False):
     """
     Recognition by performing inference once with all prompts
 
@@ -182,35 +308,12 @@ def biomedparse_inference_all_prompts(width, height, image_resize, img_data_slic
         - masks: final binary mask saved in dictionary
     """
     data = {"image":img_data_slice, "text":image_targets, "height":height, "width":width}
-    batched_inputs = [data]
-    
-    with torch.no_grad():
-        if not lora:
-            results, image_size, extra = model.model.evaluate_demo(batched_inputs)
-        else:
-            results, image_size, extra = model.base_model.model.model.evaluate_demo(batched_inputs)
-    pred_mask_prob, pred_masks_pos = biomedparse_inference_masks(data, results, extra, model, lora=lora)
 
-    predicts = {}
-    p_values = {}
-    sigmoid_avg = {}
-    
-    for i, t in enumerate(image_targets):
-        predicts[t] = pred_mask_prob[i]
-        if t in BIOMED_OBJECTS['MRI-Cardiac']:
-            adj_p_value = check_mask_stats(image_resize, pred_mask_prob[i]*255, 'MRI-Cardiac', t)
-        else:
-            adj_p_value = 0
-        p_values[t] = adj_p_value
-        sigmoid_avg[t] = [pred_mask_prob[i][pred_mask_prob[i]>0.5].sum(), pred_mask_prob[i][pred_mask_prob[i]>0.5].mean()]
-    predicts_raw = predicts.copy()
-    if remove_overlapping_by == 'p-val':
-        predicts = non_maxima_suppression(predicts, p_values)
-    else:
-        predicts = non_maxima_suppression_sigmoids(predicts, sigmoid_avg)
-    masks = combine_masks(predicts)
+    result_raw, pred_mask_prob, pred_masks_pos, classification_prob = biomedparse_inference(data, model, lora=lora)
 
-    return predicts_raw, masks
+    predicts_raw, masks = biomedparse_inference_postprocessing_sigmoid(pred_mask_prob, image_targets)
+
+    return result_raw, predicts_raw, masks
 
 
 def biomedparse_inference_single_prompt(width, height, image_resize, img_data_slice, image_targets, model, remove_overlapping_by = 'p-val', lora = False):
@@ -227,37 +330,18 @@ def biomedparse_inference_single_prompt(width, height, image_resize, img_data_sl
         - predicts_raw: all predictions (logits) before removing overlapping masks
         - masks: final binary mask saved in dictionary
     """
-    predicts = {}
-    p_values = {}
-    sigmoid_avg = {}
+    pred_mask_prob_all = []
     for i, batch_targets in enumerate(image_targets):
         data = {"image":img_data_slice, "text":[batch_targets], "height":height, "width":width}
-        batched_inputs = [data]
 
-        with torch.no_grad():
-            if not lora:
-                results, image_size, extra = model.model.evaluate_demo(batched_inputs)
-            else:
-                results, image_size, extra = model.base_model.model.model.evaluate_demo(batched_inputs)
-        pred_mask_prob, pred_masks_pos = biomedparse_inference_masks(data, results, extra, model, lora=lora)
+        result_raw, pred_mask_prob, pred_masks_pos, classification_prob = biomedparse_inference(data, model, lora=lora)
+        pred_mask_prob_all.append(pred_mask_prob.squeeze())
+    
+    pred_mask_prob_all = np.stack(pred_mask_prob_all, axis=0)
 
-        if batch_targets in BIOMED_OBJECTS['MRI-Cardiac']:
-            adj_p_value = check_mask_stats(image_resize, pred_mask_prob[0]*255, 'MRI-Cardiac', batch_targets)
-        else:
-            adj_p_value = 0
-        # adj_p_value = 1
+    predicts_raw, masks = biomedparse_inference_postprocessing_sigmoid(pred_mask_prob_all, image_targets)
 
-        predicts[batch_targets] = pred_mask_prob[0]
-        p_values[batch_targets] = adj_p_value
-        sigmoid_avg[batch_targets] = [pred_mask_prob[0][pred_mask_prob[0]>0.5].sum(), pred_mask_prob[0][pred_mask_prob[0]>0.5].mean()]
-    predicts_raw = predicts.copy()
-    if remove_overlapping_by == 'p-val':
-        predicts = non_maxima_suppression(predicts, p_values)
-    else:
-        predicts = non_maxima_suppression_sigmoids(predicts, sigmoid_avg)
-    masks = combine_masks(predicts)
-
-    return predicts_raw, masks
+    return np.nan, predicts_raw, masks
 
 
 def process_biomedparse_mask(pred_seg, targets_color_dict=targets_color_dict, colors_list=colors_list):
