@@ -1,6 +1,8 @@
+import sys
+import os
+
 import json
 
-import os
 from collections import defaultdict
 import nibabel as nib
 import numpy as np
@@ -61,7 +63,9 @@ def sliced_img_gt_retrieval(
     
     shape = raw_img_data.shape
 
-    if shape[-1] < no_slices_per_sample*slice_freq:
+    if slice_freq == 1:
+        slice_index_last_dim = range(0, shape[-1])
+    elif shape[-1] < no_slices_per_sample*slice_freq:
         slice_index_last_dim = range(0, shape[-1], slice_freq)
     else:
         slice_index_last_dim = range(shape[-1]//2 - slice_freq*(no_slices_per_sample-1)//2, 1 + shape[-1]//2 + slice_freq*(no_slices_per_sample-1)//2, slice_freq)
@@ -273,14 +277,14 @@ def biomedparse_inference_postprocessing_sigmoid(pred_mask_prob, image_targets):
 
     return predicts_raw, masks
 
-def biomedparse_inference_postprocessing_class_prob(pred_mask_prob, classification_prob, image_targets):
+def biomedparse_inference_postprocessing_class_prob(pred_mask_prob, classification_prob, image_targets, class_prob_thres=-1):
 
     predicts = {}
     class_prob = {}
 
     for i, t in enumerate(image_targets):
         class_prob_t = classification_prob[i].cpu().item()
-        if class_prob_t > 0.1:
+        if class_prob_t > class_prob_thres:
             predicts[t] = pred_mask_prob[i]
             class_prob[t] = class_prob_t
 
