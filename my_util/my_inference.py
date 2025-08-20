@@ -244,9 +244,10 @@ def biomedparse_inference(data, model, lora = False):
     with torch.no_grad():
         out_prob = vl_similarity(v_emb, t_emb, temperature=temperature)
 
-    # match_id = out_prob.max(0)[1]
-    # classification_prob = out_prob.softmax(dim=1)[match_id,:]
-    classification_prob, match_id = out_prob.max(0)
+    match_id = out_prob.max(0)[1]
+    classification_prob = out_prob.softmax(dim=1)[match_id,:]
+    classification_prob = classification_prob.diag()
+    # classification_prob, match_id = out_prob.max(0)
 
     pred_masks_pos = pred_masks[match_id, :, :]
 
@@ -278,8 +279,10 @@ def biomedparse_inference_postprocessing_class_prob(pred_mask_prob, classificati
     class_prob = {}
 
     for i, t in enumerate(image_targets):
-        predicts[t] = pred_mask_prob[i]
-        class_prob[t] = classification_prob[i].cpu().item()
+        class_prob_t = classification_prob[i].cpu().item()
+        if class_prob_t > 0.1:
+            predicts[t] = pred_mask_prob[i]
+            class_prob[t] = class_prob_t
 
     predicts_raw = predicts.copy()
     predicts = non_maxima_suppression(predicts, class_prob)
