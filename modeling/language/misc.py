@@ -6,8 +6,11 @@ import numpy as np
 
 from utilities.constants import IMAGENET_DEFAULT_TEMPLATES
 
-nltk.download('punkt', quiet=True)
-nltk.download('averaged_perceptron_tagger', quiet=True)
+nltk_data_path_on_offline_machine = '/cluster/customapps/biomed/grlab/users/xueqwang/nltk'
+nltk.data.path.append(nltk_data_path_on_offline_machine)
+
+# nltk.download('punkt', quiet=True)
+# nltk.download('averaged_perceptron_tagger', quiet=True)
 
 def get_tag(tokenized, tags):
     if not isinstance(tags, (list, tuple)):

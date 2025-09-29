@@ -231,13 +231,13 @@ ATTENTION_ARCH:
 
 DATASETS:
   TRAIN: [
-  'biomed_fine_tuning_HVSMR_large_train'    # Add your registered training datasets here
+  'biomed_fine_tuning_HVSMR_small_train'    # Add your registered training datasets here
   ]
 
 
 
   TEST:  [
-  'biomed_fine_tuning_HVSMR_large_val'   # Add your registered test datasets here
+  'biomed_fine_tuning_HVSMR_small_val'   # Add your registered test datasets here
   ]
   
   CLASS_CONCAT: false
@@ -304,7 +304,7 @@ BioMed:
 # Detectron2 training config for optimizer and lr scheduler
 SOLVER:
   BASE_LR: 0.0001
-  STEPS: [0.25, 0.5, 0.88889, 0.96296]
+  STEPS: [0.2, 0.4, 0.6, 0.8]
   MAX_ITER: 1
   GAMMA: 0.2
   WARMUP_FACTOR: 1.0
@@ -315,7 +315,7 @@ SOLVER:
   LR_SCHEDULER_NAME: "WarmupMultiStepLR"
   LR_MULTIPLIER:
     backbone: 0.1
-    lang_encoder: 0.1
+    lang_encoder: 0.2
   FIX_PARAM:
     backbone: True
     lang_encoder: False
@@ -328,3 +328,4 @@ SOLVER:
     CLIP_VALUE: 5.0 # 0.01
     NORM_TYPE: 2.0
   MAX_NUM_EPOCHS: 50
+  LOSS_CONTRAST: False

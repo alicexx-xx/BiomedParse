@@ -20,7 +20,7 @@ SAVE_CHECKPOINT: false
 
 # Logging and Debug
 WANDB: False
-LOG_EVERY: 2000
+LOG_EVERY: 200
 FIND_UNUSED_PARAMETERS: false
 
 # Speed up training
@@ -107,7 +107,7 @@ MODEL:
       ENABLED: True
       MAX_LEN: 10
       TEXT_WEIGHT: 2.0
-      CLASS_WEIGHT: 0.01
+      CLASS_WEIGHT: 0.5
     RETRIEVAL:
       ENABLED: False
     LVIS:
@@ -125,25 +125,25 @@ MODEL:
       SIM_THRES: 0.95
     DEEP_SUPERVISION: True
     NO_OBJECT_WEIGHT: 0.1
-    GCLASS_WEIGHT: 5.0
-    GMASK_WEIGHT: 5.0
-    GDICE_WEIGHT: 5.0
-    SCLASS_WEIGHT: 0.1
-    SMASK_WEIGHT: 0.25
-    SDICE_WEIGHT: 0.25
-    OCLASS_WEIGHT: 0.1
-    OMASK_WEIGHT: 0.25
-    ODICE_WEIGHT: 0.25
-    CLASS_WEIGHT: 0.1
-    MASK_WEIGHT: 0.25
-    DICE_WEIGHT: 0.25
-    BBOX_WEIGHT: 0.25
-    GIOU_WEIGHT: 0.1
-    CAPTION_WEIGHT: 0.1
+    GCLASS_WEIGHT: 0.4
+    GMASK_WEIGHT: 1.0
+    GDICE_WEIGHT: 1.0
+    SCLASS_WEIGHT: 0.4
+    SMASK_WEIGHT: 1.0
+    SDICE_WEIGHT: 1.0
+    OCLASS_WEIGHT: 0.4
+    OMASK_WEIGHT: 1.0
+    ODICE_WEIGHT: 1.0
+    CLASS_WEIGHT: 2.0
+    MASK_WEIGHT: 5.0
+    DICE_WEIGHT: 5.0
+    BBOX_WEIGHT: 5.0
+    GIOU_WEIGHT: 2.0
+    CAPTION_WEIGHT: 2.0
     COST_SPATIAL:
-      CLASS_WEIGHT: 0.25
-      MASK_WEIGHT: 0.1
-      DICE_WEIGHT: 0.1
+      CLASS_WEIGHT: 5.0
+      MASK_WEIGHT: 2.0
+      DICE_WEIGHT: 2.0
     HIDDEN_DIM: 512
     NUM_OBJECT_QUERIES: 101
     NHEADS: 8
@@ -231,19 +231,18 @@ ATTENTION_ARCH:
 
 DATASETS:
   TRAIN: [
-  'biomed_fine_tuning_HVSMR_large_train'    # Add your registered training datasets here
+  'biomed_fine_tuning_HVSMR_train'    # Add your registered training datasets here
   ]
 
 
 
   TEST:  [
-  'biomed_fine_tuning_HVSMR_large_val'   # Add your registered test datasets here
+  'biomed_fine_tuning_HVSMR_val'   # Add your registered test datasets here
   ]
   
   CLASS_CONCAT: false
   SIZE_DIVISIBILITY: 32
   PROPOSAL_FILES_TRAIN: []
-  RECOGNITION_ONTOLOGIES: ['left heart ventricle', 'right heart ventricle', 'left heart atrium', 'right heart atrium', 'aorta', 'pulmonary artery', 'superior vena cava', 'inferior vena cava']
 
 INPUT:
   PIXEL_MEAN: [123.675, 116.280, 103.530]
@@ -304,9 +303,9 @@ BioMed:
 # Detectron2 training config for optimizer and lr scheduler
 SOLVER:
   BASE_LR: 0.0001
-  STEPS: [0.25, 0.5, 0.88889, 0.96296]
+  STEPS: [0.88889, 0.96296]
   MAX_ITER: 1
-  GAMMA: 0.2
+  GAMMA: 0.1
   WARMUP_FACTOR: 1.0
   WARMUP_ITERS: 10
   WARMUP_METHOD: "linear"
@@ -318,7 +317,7 @@ SOLVER:
     lang_encoder: 0.1
   FIX_PARAM:
     backbone: True
-    lang_encoder: False
+    lang_encoder: True
     pixel_decoder: False
   WEIGHT_DECAY_NORM: 0.0
   WEIGHT_DECAY_EMBED: 0.0

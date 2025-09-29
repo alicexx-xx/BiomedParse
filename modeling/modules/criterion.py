@@ -365,16 +365,22 @@ class SetCriterion(nn.Module):
             return {"loss_grounding_bce_0": loss, "loss_grounding_dice_0": loss, "loss_grounding_ce_0": loss}
 
         pred_logits = []
+        pred_logits_seen = []
+        
         for b in range(len(indices)):
-            t_emb = targets[b]['grounding_class_embs']
+            # t_emb = targets[b]['grounding_class_embs']
+            ft_recognition_classes = targets[b]['grounding_ft_recognition_classes']
+            t_emb = extra['grd_recognition_classes_embeddings']
             v_emb = outputs["pred_gtexts"][b]
             
             t_emb = t_emb / (t_emb.norm(dim=-1, keepdim=True) + 1e-7)
             v_emb = v_emb / (v_emb.norm(dim=-1, keepdim=True) + 1e-7)            
 
             out_prob = vl_similarity(v_emb, t_emb, temperature=extra['lang_logit'])
-            pred_logits += [out_prob]            
-        outputs['pred_logits'] = pred_logits
+            pred_logits += [out_prob]
+            pred_logits_seen += [out_prob[:,ft_recognition_classes]]            
+        outputs['pred_logits'] = pred_logits_seen
+        outputs['pred_logits_full'] = pred_logits
 
         indices = self.matcher(outputs, targets, mode='grounding', extra={'temperature':extra['lang_logit']})
         src_idx = self._get_src_permutation_idx(indices)
@@ -413,9 +419,13 @@ class SetCriterion(nn.Module):
             align_corners=False,
         ).squeeze(1)
 
+        # print(point_logits.shape)
+        # print(point_labels.shape)
+        # print(len(src_masks))
+
         losses = {
-            "loss_grounding_bce_0": sigmoid_ce_loss_jit(point_logits, point_labels, len(src_masks)),
-            "loss_grounding_dice_0": dice_loss_jit(point_logits, point_labels, len(src_masks)),
+            "loss_grounding_bce_0": self.grounding_weight['text']*sigmoid_ce_loss_jit(point_logits, point_labels, len(src_masks)),
+            "loss_grounding_dice_0": self.grounding_weight['text']*dice_loss_jit(point_logits, point_labels, len(src_masks)),
         }
 
         # compute query-token contrastive loss
@@ -448,21 +458,35 @@ class SetCriterion(nn.Module):
         loss_grd_ce = 0
         for b in range(len(indices)):
             task = targets[b]['grounding_task']
-            pred_logit = outputs["pred_logits"][b]
+            pred_logit = outputs["pred_logits_full"][b]
+            ft_recognition_classes = targets[b]['grounding_ft_recognition_classes']
+            idx_2_rec_class = {i:c for i, c in enumerate(ft_recognition_classes)}
             gt_logit = torch.zeros_like(pred_logit)
-            select_idx = torch.stack((indices[b][0], indices[b][1])).tolist()
+            select_idx = torch.stack((indices[b][0], torch.as_tensor([idx_2_rec_class[int(matched_idx.item())] for matched_idx in indices[b][1]], dtype=torch.int64))).tolist()
             gt_logit[select_idx] = 1
-            t_hash = torch.tensor(targets[b]['grounding_hash'], device=gt_logit.device)
-            hash_table = torch.zeros((len(t_hash), len(t_hash)), device=gt_logit.device)
-            for idx in range(0, len(hash_table)):
-                hash_table[idx][t_hash==t_hash[idx]] = 1
-            hash_table = hash_table / hash_table.sum(-1, keepdim=True)
-            gt_logit = gt_logit @ hash_table
-            loss_grd_ce += self.grounding_weight[task]*torch.sum(-gt_logit.t() * F.log_softmax(pred_logit.t(), dim=-1), dim=-1).mean()
+
+            # t_hash = torch.tensor(targets[b]['grounding_hash'], device=gt_logit.device)
+            # hash_table = torch.zeros((len(t_hash), len(t_hash)), device=gt_logit.device)
+            # for idx in range(0, len(hash_table)):
+            #     hash_table[idx][t_hash==t_hash[idx]] = 1
+            # hash_table = hash_table / hash_table.sum(-1, keepdim=True)
+
+            # print(f"hash_table={hash_table}")
+
+            # raise Exception("Debug breakpoint")
+
+            # gt_logit = gt_logit @ hash_table
+            if targets[b]['loss_contrast']:
+                loss_grd_ce += 0.5*self.grounding_weight[task]*torch.sum(-gt_logit.t() * F.log_softmax(pred_logit.t(), dim=-1), dim=-1).mean() + 0.5*self.grounding_weight[task]*torch.sum(-gt_logit * F.log_softmax(pred_logit, dim=-1), dim=-1).mean()
+            else:
+                loss_grd_ce += self.grounding_weight[task]*torch.sum(-gt_logit.t() * F.log_softmax(pred_logit.t(), dim=-1), dim=-1).mean()
         loss_grd_ce = loss_grd_ce / len(indices)
         losses.update({"loss_grounding_ce_0": loss_grd_ce})
         del src_masks
         del target_masks
+
+        # raise Exception("Debug breakpoint")
+
         return losses
 
     def loss_spatials(self, outputs, targets, indices, num_masks, layer_id, extra):

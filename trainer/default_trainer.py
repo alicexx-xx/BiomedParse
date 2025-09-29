@@ -33,6 +33,10 @@ from .utils_trainer import UtilsTrainer
 from .utils.misc import *
 from .utils.serialization import JSONEncoder, filter_jsonable
 
+from peft import get_peft_model
+from peft import LoraConfig, TaskType
+import transformers
+
 logger = logging.getLogger(__name__)
 
 
@@ -199,14 +203,41 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
         if self.opt['CUDA']:
             torch.cuda.empty_cache()
 
-        self.create_optimizer_and_scheduler()
-        self.models = {model_name: self.raw_models[model_name] for model_name in self.model_names}
-        self._initialize_ddp()
-
         if self.opt.get('WEIGHT', False):
             self.load_weight(self.opt['RESUME_FROM'], must_exist=True)
         if self.opt.get('RESUME', False):
             self.load_checkpoint(self.opt['RESUME_FROM'], must_exist=True)
+
+        # move models to the device
+        for module_name in self.model_names:
+            lora_modules = []
+            for name, module in self.raw_models[module_name].model.sem_seg_head.named_modules():
+                if isinstance(module, (nn.Linear, nn.Embedding, nn.Conv2d, transformers.pytorch_utils.Conv1D)):
+                    lora_modules.append(f"model.sem_seg_head.{name}")
+            
+            ft_params = []
+            for name, param in self.raw_models[module_name].model.sem_seg_head.named_parameters():
+                if (not [m for m in lora_modules if m in f"model.sem_seg_head.{name}"]) and isinstance(param, nn.parameter.Parameter):
+                     ft_params.append(f"sem_seg_head.{name}")
+
+            # peft_config = LoraConfig(inference_mode=False, r=64, lora_alpha=128, lora_dropout=0.2, target_modules=lora_modules)
+            peft_config = LoraConfig(inference_mode=False, r=256, lora_alpha=512, lora_dropout=0.1, target_modules=lora_modules)
+
+            # peft_config = LoraConfig(inference_mode=False, r=256, lora_alpha=512, lora_dropout=0.1, target_modules=lora_modules)
+            self.raw_models[module_name] = get_peft_model(self.raw_models[module_name], peft_config)
+            for p in ft_params:
+                param_location = p.split('.')
+                curr_mod = self.raw_models[module_name].base_model.model.model
+                for pl in param_location[:-1]:
+                    if pl in [str(n) for n in range(20)]:
+                        curr_mod = curr_mod[int(pl)]
+                    else:
+                        curr_mod = getattr(curr_mod, pl)
+                getattr(curr_mod, param_location[-1]).requires_grad = True
+
+        self.create_optimizer_and_scheduler()
+        self.models = {model_name: self.raw_models[model_name] for model_name in self.model_names}
+        self._initialize_ddp()
 
         ######################
         # Start the main loop
@@ -220,6 +251,12 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
             logger.info(f"  Total train batch size (w. parallel, distributed & accumulation) = {self.opt['SOLVER']['MAX_NUM_EPOCHS'] * self.train_params['updates_per_epoch']}")
             logger.info(f"  Gradient Accumulation steps = {self.grad_acc_steps}")
             logger.info(f"  Total optimization steps = {self.opt['SOLVER']['MAX_NUM_EPOCHS'] * self.train_params['updates_per_epoch'] // self.grad_acc_steps}")
+            logger.info(f"  Trainable Parameters:")
+            for module_name in self.model_names:
+                self.raw_models[module_name].print_trainable_parameters()
+                for name, param in self.raw_models[module_name].named_parameters():
+                    if param.requires_grad:
+                        logger.info(f"  {name, param.shape}")
 
     def train(self):
         """
@@ -228,6 +265,10 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
         self.init_train()
         current_optim_steps = self._get_and_validate_current_optim_steps()
         num_epochs = self.opt['SOLVER']['MAX_NUM_EPOCHS']
+        val_mDice = []
+        best_val_mDice = []
+        patience = 0
+        patience_max = 10
 
         if self.opt.get('EVAL_AT_START', False):
             results = self._eval_on_set(self.save_folder)
@@ -286,13 +327,19 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
                                         f"total items[{self.train_params['total_batch_size']}] "
                                         f"mini batches[{self.train_params['num_updates']:6}] "
                                         f"memory[{memory:.0f}] "
-                                        f"epoch remaining[{str((datetime.now() - epoch_start_time) / (batch_idx + 1) * (self.train_params['updates_per_epoch'] - batch_idx - 1)).split('.')[0]}]")
+                                        f"epoch remaining[{str((datetime.now() - epoch_start_time) / (batch_idx + 1) * (self.train_params['updates_per_epoch'] - batch_idx - 1)).split('.')[0]}] ")
 
                 # evaluate and save ckpt every epoch
                 if batch_idx + 1 == self.train_params['updates_per_epoch']:
                     if self.opt.get('SAVE_CHECKPOINT', True):
                         self.save_checkpoint(self.train_params['num_updates'])
                     results = self._eval_on_set(self.save_folder)
+                    if 'biomed_fine_tuning_HVSMR_large_val/grounding_refcoco' in results.keys():
+                        val_mDice.append((epoch+1, results['biomed_fine_tuning_HVSMR_large_val/grounding_refcoco']['grounding']['mDice']))
+                    elif 'biomed_fine_tuning_HVSMR_val/grounding_refcoco' in results.keys():
+                        val_mDice.append((epoch+1, results['biomed_fine_tuning_HVSMR_val/grounding_refcoco']['grounding']['mDice']))
+                    else:
+                        val_mDice.append((epoch+1, results['biomed_fine_tuning_HVSMR_small_val/grounding_refcoco']['grounding']['mDice']))
                     # if self.opt['rank'] == 0 and self.opt['WANDB']:
                     #     wandb.log(results)
                     break
@@ -301,5 +348,33 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
             logger.info(f"PROGRESS: {100.0 * (epoch + 1) / num_epochs:.2f}%")
             logger.info(f"Config files are at {self.opt['conf_files']}")
 
+            val_mdice_epoch = val_mDice[-1][1]
+            thres_mdice = 0 if len(best_val_mDice)==0 else np.mean(best_val_mDice)-0.5
+            if val_mdice_epoch >= thres_mdice:
+                if (len(best_val_mDice)>0) and (val_mdice_epoch > max(best_val_mDice)):
+                    self.save_checkpoint(1)
+                patience = 0
+            else:
+                patience += 1
+            best_val_mDice.append(val_mdice_epoch)
+            best_val_mDice = sorted(best_val_mDice, reverse=True)
+            best_val_mDice = best_val_mDice[:min(len(best_val_mDice), 3)]
+
+            if patience > patience_max:
+                break
+
         # if not self.opt.get('SAVE_CHECKPOINT', True):
         #     self.save_checkpoint(self.train_params['num_updates'])
+        logger.info(f"------------------------------")
+        logger.info(f"Val Scores")
+        logger.info(f"------------------------------")
+        logger.info(val_mDice)
+
+        logger.info(f"------------------------------")
+        logger.info(f"GPU Usage")
+        logger.info(f"------------------------------")
+
+        logger.info(f"Device: {torch.cuda.get_device_name(0)}")
+        logger.info(f"Total Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.2f} GB")
+        logger.info(f"Allocated: {torch.cuda.memory_allocated(0) / 1024**3:.2f} GB")
+        logger.info(f"Cached:    {torch.cuda.memory_reserved(0) / 1024**3:.2f} GB")

@@ -1,7 +1,7 @@
-export DETECTRON2_DATASETS=biomedparse_datasets/
-export DATASET=biomedparse_datasets/
-export DATASET2=biomedparse_datasets/
-export VLDATASET=biomedparse_datasets/
+export DETECTRON2_DATASETS=/cluster/work/grlab/projects/tmp_xueqwang/
+export DATASET=/cluster/work/grlab/projects/tmp_xueqwang/
+export DATASET2=/cluster/work/grlab/projects/tmp_xueqwang/
+export VLDATASET=/cluster/work/grlab/projects/tmp_xueqwang/
 export PATH=$PATH:biomedparse_datasets/coco_caption/jre1.8.0_321/bin/
 export PYTHONPATH=$PYTHONPATH:biomedparse_datasets/coco_caption/
 export OMPI_ALLOW_RUN_AS_ROOT=1
@@ -17,5 +17,6 @@ CUDA_VISIBLE_DEVICES=0 mpirun -n 1 python entry.py evaluate \
             FP16 True \
             WEIGHT True \
             STANDARD_TEXT_FOR_EVAL False \
-            RESUME_FROM pretrained/biomedparse_v1.pt \
+            RESUME_FROM /cluster/work/grlab/projects/tmp_xueqwang/biomedparse_ft_checkpoints/ft_0701/model_state_dict.pt
+
             

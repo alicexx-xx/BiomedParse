@@ -120,3 +120,6 @@ output
 #biomedparse_eval_results.json
 
 .amlignore*
+
+# fine-tuning datasets
+biomedparse_datasets/fine_tuning_HVSMR/*

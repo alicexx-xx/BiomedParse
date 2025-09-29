@@ -122,6 +122,7 @@ class BioMedDatasetMapper:
         tokenizer,
         binary_classes: bool,
         rotate: bool,
+        recognition_ontologies:list,
     ):
         """
         NOTE: this interface is experimental.
@@ -146,6 +147,8 @@ class BioMedDatasetMapper:
         self.lvis = lvis
         self.lvis_thres = lvis_thres
         self.max_grounding_num = max_grounding_num
+
+        self.recognition_ontologies = recognition_ontologies
 
         self.shape_sampler = shape_sampler
 
@@ -192,6 +195,7 @@ class BioMedDatasetMapper:
             "tokenizer": tokenizer,
             "binary_classes": cfg['MODEL']['ENCODER']['BINARY_CLASSES'],
             "rotate": cfg['INPUT']['RANDOM_ROTATE'],
+            "recognition_ontologies": cfg['DATASETS']['RECOGNITION_ONTOLOGIES']
         }
         return ret
 
@@ -237,6 +241,7 @@ class BioMedDatasetMapper:
         boxes_grd = []
         hash_grd = []
         classes = []
+        ft_recognition_classes = []
         masks_orig = []
         for ann in grounding_anno:
             if 'segmentation' in ann:
@@ -270,9 +275,10 @@ class BioMedDatasetMapper:
             if self.binary_classes:
                 ann["category_id"] = 1 * (ann["category_id"] > 0)
             classes.append(ann["category_id"])
+            ft_recognition_classes.append(ann['ft_recognition_class_id'])
         #masks_grd = torch.from_numpy(np.stack(masks_grd))
         boxes_grd = torch.tensor(boxes_grd)
-        groundings = {'masks': masks_grd, 'texts': texts_grd, 'hash': hash_grd, 'mode': 'text'}
+        groundings = {'masks': masks_grd, 'texts': texts_grd, 'ft_recognition_classes':ft_recognition_classes, 'hash': hash_grd, 'mode': 'text'}
         dataset_dict["groundings"] = groundings
 
         masks_grd = torch.stack([torch.from_numpy(np.ascontiguousarray(x.copy())) for x in masks_grd])
@@ -283,7 +289,9 @@ class BioMedDatasetMapper:
         instances.gt_boxes = BitMasks(masks_grd).get_bounding_boxes()
 
         classes = np.array(classes)
+        ft_recognition_classes = np.array(ft_recognition_classes)
         is_things = np.array([1 for _ in classes])
+        instances.gt_ft_recognition_classes = torch.tensor(ft_recognition_classes, dtype=torch.int64)
         instances.gt_classes = torch.tensor(classes, dtype=torch.int64)
         instances.is_things = torch.tensor(is_things, dtype=torch.int64)
 
@@ -306,6 +314,7 @@ class BioMedDatasetMapper:
             if len(grounding_anno) > 0:
                 masks_grd = []
                 texts_grd = []
+                ft_recognition_classes = []
                 mode = 'text'
                 random.shuffle(grounding_anno)
                 for ann in grounding_anno:
@@ -337,9 +346,11 @@ class BioMedDatasetMapper:
                     # random select a sentence of a single annotation.
                     rand_index = random.randint(0, len(ann['sentences'])-1)
                     texts_grd += [ann['sentences'][rand_index]['raw'].lower()]
+                    ft_recognition_classes.append(ann['ft_recognition_class_id'])
                 # max_len = min(grounding_len, len(texts_grd))
                 max_len = len(masks_grd)
                 indices = np.random.permutation(max_len)
+                ft_recognition_classes = list(np.array(ft_recognition_classes)[indices])
                 texts_grd = list(np.array(texts_grd)[indices])
                 masks_grd = torch.tensor(np.stack(masks_grd)[indices])
                 hash_grd = np.array([hash(txt) for txt in texts_grd])
@@ -369,7 +380,7 @@ class BioMedDatasetMapper:
                     masks_grd = masks_grd[selected_mask]
                     texts_grd = [prompt_engineering(text.replace('-other','').replace('-merged','').replace('-stuff',''), topk=10000, suffix='.') \
                                         for text in texts_grd]
-            groundings = {'masks': masks_grd, 'texts': texts_grd, 'mode': mode, 'hash': hash_grd}
+            groundings = {'masks': masks_grd, 'texts': texts_grd, 'ft_recognition_classes':ft_recognition_classes, 'mode': mode, 'hash': hash_grd}
             dataset_dict["groundings"] = groundings
             assert len(masks_grd) == len(dataset_dict['grounding_info']), f"len(masks_grd)={len(masks_grd)}, len(dataset_dict['grounding_info'])={len(dataset_dict['grounding_info'])}, mask shape={masks_grd.shape}, max_len={max_len}, grounding_len={grounding_len}, len(texts_grd)={len(texts_grd)}, len(hash_grd)={len(hash_grd)}"
         # gt_masks_orisize = torch.stack([torch.from_numpy(m.squeeze(-1)) for m in masks_orig])

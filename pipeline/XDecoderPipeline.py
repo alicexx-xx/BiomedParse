@@ -44,10 +44,19 @@ class XDecoderPipeline:
     def initialize_model(self):
         model_name = "default"
         model = build_model(self._opt)
+
+        # FREEZE parameters (refer to SOLVER in config and xdecoder_trainer line 75)
+        # for param in model.parameters():
+        #     param.requires_grad = True
+        # for param in model.backbone.parameters():
+        #     param.requires_grad = False
+        # for param in model.sem_seg_head.predictor.lang_encoder.parameters():
+        #     param.requires_grad = False
+
         model.train()
 
-        if is_main_process():
-            logger.info(model)
+        # if is_main_process():
+        #     logger.info(model)
 
         raw_models = {model_name: BaseModel(self._opt, model)}
         return raw_models
@@ -132,8 +141,8 @@ class XDecoderPipeline:
                 model.model.metadata = hook_metadata(model.model.metadata, dataset_label)
                 eval_type = model.model.metadata.evaluator_type
                 if 'background' in names:
-                    model.model.sem_seg_head.num_classes = len(names) - 1
-                model.model.sem_seg_head.predictor.lang_encoder.get_text_embeddings(names, is_eval=True)
+                    model.base_model.model.model.sem_seg_head.num_classes = len(names) - 1
+                model.base_model.model.model.sem_seg_head.predictor.lang_encoder.get_text_embeddings(names, is_eval=True)
                 hook_switcher(model, dataset_label)
                 total = len(eval_batch_gen)
                 num_warmup = min(5, total - 1)
@@ -191,13 +200,13 @@ class XDecoderPipeline:
                     start_data_time = time.perf_counter()
 
             results = self.evaluator.evaluate()
-            model.model.sem_seg_head.predictor.lang_encoder.reset_text_embeddings()
+            model.base_model.model.model.sem_seg_head.predictor.lang_encoder.reset_text_embeddings()
 
             if is_main_process():
                 scores["{}/{}".format(dataset_label, eval_type)] = results
 
         # set back to training stat.
-        model.model.sem_seg_head.num_classes = self._opt['MODEL']['ENCODER']['NUM_CLASSES']
+        model.base_model.model.model.sem_seg_head.num_classes = self._opt['MODEL']['ENCODER']['NUM_CLASSES']
         model.model.metadata = MetadataCatalog.get(self._opt['DATASETS']['TRAIN'][0])
         # save scores
         if is_main_process():

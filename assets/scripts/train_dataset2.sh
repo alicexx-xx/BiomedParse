@@ -7,8 +7,8 @@ export PYTHONPATH=$PYTHONPATH:biomedparse_datasets/coco_caption/
 export OMPI_ALLOW_RUN_AS_ROOT=1
 export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 #export WANDB_KEY=YOUR_WANDB_KEY # Provide your wandb key here
-CUDA_VISIBLE_DEVICES=0 mpirun -n 1 python entry.py train \
-            --conf_files configs/biomed_seg_lang_v1.yaml \
+CUDA_VISIBLE_DEVICES=0 mpirun -n 1 python entry_dataset2.py train \
+            --conf_files configs/biomed_seg_lang_v1_dataset2.yaml \
             --overrides \
             FP16 True \
             RANDOM_SEED 2024 \

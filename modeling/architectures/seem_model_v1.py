@@ -61,6 +61,8 @@ class GeneralizedSEEM(nn.Module):
         train_max_iter: int,
         binary_classes: bool,
         standard_text_for_eval: bool,
+        grd_recognition_classes: list,
+        loss_contrast: bool
     ):
         """
         Args:
@@ -117,6 +119,8 @@ class GeneralizedSEEM(nn.Module):
         self.train_class_names = get_class_names(train_dataset_name)
         if binary_classes:
             self.train_class_names = ['target', 'background']
+        self.grd_recognition_classes = grd_recognition_classes
+        self.loss_contrast = loss_contrast
         self.interactive_mode = interactive_mode
         self.interactive_iter = interactive_iter
 
@@ -231,6 +235,9 @@ class GeneralizedSEEM(nn.Module):
         interactive_mode = cfg['STROKE_SAMPLER']['EVAL']['MODE']
         interactive_iter = cfg['STROKE_SAMPLER']['EVAL']['MAX_ITER']
 
+        grd_recognition_classes = cfg['DATASETS']['RECOGNITION_ONTOLOGIES']
+        loss_contrast = cfg['SOLVER'].get('LOSS_CONTRAST', True)
+
         dilation = 3
         dilation_kernel = torch.ones((1, 1, dilation, dilation), device=torch.cuda.current_device())
 
@@ -265,6 +272,8 @@ class GeneralizedSEEM(nn.Module):
             "train_max_iter": train_max_iter,
             "binary_classes": enc_cfg['BINARY_CLASSES'],
             "standard_text_for_eval": cfg['STANDARD_TEXT_FOR_EVAL'],
+            "grd_recognition_classes": grd_recognition_classes,
+            "loss_contrast": loss_contrast
         }
 
     @property
@@ -331,6 +340,7 @@ class GeneralizedSEEM(nn.Module):
         images = [(x - self.pixel_mean) / self.pixel_std for x in images]
         images = ImageList.from_tensors(images, self.size_divisibility)
         self.sem_seg_head.predictor.lang_encoder.get_text_embeddings(self.train_class_names, is_eval=False)
+        self.sem_seg_head.predictor.lang_encoder.get_text_embeddings(self.grd_recognition_classes, is_eval=False, name='grd_recognition_classes', prompt=False)
 
         extra = {}
         # mask classification target
@@ -365,11 +375,13 @@ class GeneralizedSEEM(nn.Module):
                     outputs = self.sem_seg_head.predictor(multi_scale_features, mask_features, extra=extra, task='spatial')
                     extra.update(outputs)
                     extra.update(self.prepare_next_spaital_mask(extra, batched_inputs))
+                    print("iteratively generating synthetic spatial prompt!")
 
         outputs = self.sem_seg_head.predictor(multi_scale_features, mask_features, extra=extra, task='seg')
 
         extra = {'lang_logit': self.sem_seg_head.predictor.lang_encoder.logit_scale,
                  'class_embeddings': getattr(self.sem_seg_head.predictor.lang_encoder, '{}_text_embeddings'.format('default')),
+                 'grd_recognition_classes_embeddings':getattr(self.sem_seg_head.predictor.lang_encoder, '{}_text_embeddings'.format('grd_recognition_classes')),
                  'false_positive_mask': extra['false_positive_mask']}
         # bipartite matching-based loss
         self.criterion.losses = self.losses['seg'] # seg criterion losses
@@ -746,7 +758,8 @@ class GeneralizedSEEM(nn.Module):
                     target = mask_file.split('_')[-1].replace('+', ' ')
                     site = mask_file.split('_')[-2].replace('+', ' ')
                     modality = mask_file.split('_')[-3].replace('+', ' ')
-                    standard_texts.append(f'{target} in {site} {modality}')
+                    # standard_texts.append(f'{target} in {site} {modality}')
+                    standard_texts.append(f'{target}')
                 grd_texts = standard_texts
                 batch_per_image['groundings']['texts'] = standard_texts
 
@@ -943,8 +956,10 @@ class GeneralizedSEEM(nn.Module):
             if self.task_switch['grounding']:
                 grd_masks = batch_per_image['groundings']['masks']
                 grd_texts = batch_per_image['groundings']['texts']
+                # grd_texts  = self.grd_recognition_classes
                 grd_hash = batch_per_image['groundings']['hash']
                 grd_task = batch_per_image['groundings']['mode']
+                grd_recognition_classes = batch_per_image['groundings']['ft_recognition_classes']
                 
                 if len(grd_masks) == 0:
                     padded_masks = None
@@ -963,6 +978,7 @@ class GeneralizedSEEM(nn.Module):
                 selected_token_emb = token_emb[selected_mask]
                 selected_attn_mask = tokens['attention_mask'][selected_mask]
                 query_emb = selected_token_emb[selected_attn_mask.bool()]
+                # query_emb = token_emb[tokens['attention_mask'].bool()]
                 
                 class_idx = tokens['attention_mask'].sum(dim=-1) - 1
                 class_idx = torch.stack((torch.arange(len(class_idx), device=class_idx.device), class_idx)).tolist()
@@ -973,7 +989,9 @@ class GeneralizedSEEM(nn.Module):
                 target_dict['grounding_class_embs'] = class_emb
                 target_dict['grounding_hash'] = grd_hash
                 target_dict['grounding_task'] = grd_task
+                target_dict['grounding_ft_recognition_classes'] = grd_recognition_classes
 
+            target_dict['loss_contrast'] = self.loss_contrast
             new_targets.append(target_dict)
         return new_targets
 
