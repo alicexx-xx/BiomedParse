@@ -6,7 +6,7 @@ from create_annotations import *
 
 
 # provide the path to the dataset. There should be train, train_mask, test, test_mask under this folder
-targetpath = '/cluster/work/grlab/projects/tmp_xueqwang/fine_tuning_HVSMR_large'
+targetpath = '/cluster/work/grlab/projects/tmp_xueqwang/fine_tuning_HVSMR_small'
 
 
 image_size = 1024
@@ -28,6 +28,7 @@ for i in label_base:
     
 # Label ids of the dataset
 category_ids = {label_base[i]['name']: int(i) for i in label_base if 'name' in label_base[i]}
+ft_recognition_classes = {c:i for c, i in zip(label_base['5']['child'][2:], range(len(label_base['5']['child'][2:])))}
 
 
 
@@ -65,7 +66,8 @@ def images_annotations_info(maskpath):
             else:
                 task['sequence'] = mod[4:]
             
-        prompts = [f'{target} in {site} {mod}']
+        # prompts = [f'{target} in {site} {mod}']
+        prompts = [target]
         
         ann['sentences'] = []
         for p in prompts:
@@ -106,6 +108,7 @@ def images_annotations_info(maskpath):
             "iscrowd": 0,
             "image_id": image_to_id[original_file_name],
             "category_id": parent_class[target_name],
+            "ft_recognition_class_id": ft_recognition_classes[target_name],
             "id": annotation_id,
         }
 
@@ -124,11 +127,12 @@ if __name__ == "__main__":
     # Get the standard COCO JSON format
     coco_format = get_coco_json_format()
 
-    for keyword in ['train','val', 'test']:
+    for keyword in ['train','val']:
         mask_path = os.path.join(targetpath, "{}_mask/".format(keyword))
         
         # Create category section
         coco_format["categories"] = create_category_annotation(category_ids)
+        coco_format["ft_recognition_classes"] = create_recognition_class_annotation(ft_recognition_classes)
     
         # Create images and annotations sections
         coco_format["images"], coco_format["annotations"], annotation_cnt = images_annotations_info(mask_path)

@@ -72,6 +72,19 @@ def create_category_annotation(category_dict):
 
     return category_list
 
+def create_recognition_class_annotation(ft_recognition_classes_dict):
+    ft_recognition_classes_list = []
+
+    for key, value in ft_recognition_classes_dict.items():
+        category = {
+            "ft_recognition_classes": key,
+            "id": value,
+            "name": key
+        }
+        ft_recognition_classes_list.append(category)
+
+    return ft_recognition_classes_list
+
 def create_image_annotation(file_name, width, height, image_id):
     images = {
         "file_name": file_name,
@@ -108,6 +121,7 @@ def get_coco_json_format():
         "licenses": [],
         "images": [{}],
         "categories": [{}],
+        "ft_recognition_classes": [{}],
         "annotations": [{}]
     }
 

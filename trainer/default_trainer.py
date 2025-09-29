@@ -220,7 +220,10 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
                 if (not [m for m in lora_modules if m in f"model.sem_seg_head.{name}"]) and isinstance(param, nn.parameter.Parameter):
                      ft_params.append(f"sem_seg_head.{name}")
 
-            peft_config = LoraConfig(inference_mode=False, r=256, lora_alpha=512, lora_dropout=0.1, target_modules=lora_modules)
+            # peft_config = LoraConfig(inference_mode=False, r=64, lora_alpha=128, lora_dropout=0.2, target_modules=lora_modules)
+            peft_config = LoraConfig(inference_mode=False, r=256, lora_alpha=512, lora_dropout=0.2, target_modules=lora_modules)
+
+            # peft_config = LoraConfig(inference_mode=False, r=256, lora_alpha=512, lora_dropout=0.1, target_modules=lora_modules)
             self.raw_models[module_name] = get_peft_model(self.raw_models[module_name], peft_config)
             for p in ft_params:
                 param_location = p.split('.')
@@ -265,7 +268,7 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
         val_mDice = []
         best_val_mDice = []
         patience = 0
-        patience_max = 3
+        patience_max = 10
 
         if self.opt.get('EVAL_AT_START', False):
             results = self._eval_on_set(self.save_folder)
@@ -331,7 +334,12 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
                     if self.opt.get('SAVE_CHECKPOINT', True):
                         self.save_checkpoint(self.train_params['num_updates'])
                     results = self._eval_on_set(self.save_folder)
-                    val_mDice.append((epoch+1, results['biomed_fine_tuning_HVSMR_large_val/grounding_refcoco']['grounding']['mDice']))
+                    if 'biomed_fine_tuning_HVSMR_large_val/grounding_refcoco' in results.keys():
+                        val_mDice.append((epoch+1, results['biomed_fine_tuning_HVSMR_large_val/grounding_refcoco']['grounding']['mDice']))
+                    elif 'biomed_fine_tuning_HVSMR_val/grounding_refcoco' in results.keys():
+                        val_mDice.append((epoch+1, results['biomed_fine_tuning_HVSMR_val/grounding_refcoco']['grounding']['mDice']))
+                    else:
+                        val_mDice.append((epoch+1, results['biomed_fine_tuning_HVSMR_small_val/grounding_refcoco']['grounding']['mDice']))
                     # if self.opt['rank'] == 0 and self.opt['WANDB']:
                     #     wandb.log(results)
                     break

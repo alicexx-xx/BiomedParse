@@ -188,7 +188,9 @@ def main():
 
     raw_data_folder = '/cluster/work/grlab/projects/projects2024-ukb_cvd/D4CVD/HVSMR-2.0/cropped'
     val_samples = [8, 11, 24, 29, 59]
+    # val_samples = [58, 56, 49, 17, 1]
     test_samples = [0, 10, 12, 16, 19, 30, 40, 45, 50, 53]
+    # test_samples = [12,45,10,40,50,53,30,16,0,19,24,11,8,29,59,51,21,39,22,47,18,31,28,42,46]
     no_slices_per_sample = 0
     slice_freq = 1
 

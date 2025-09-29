@@ -273,7 +273,10 @@ def biomedparse_inference_postprocessing_sigmoid(pred_mask_prob, image_targets):
     
     predicts_raw = predicts.copy()
     predicts = non_maxima_suppression_sigmoids(predicts, sigmoid_avg)
-    masks = combine_masks(predicts)
+    if predicts:
+        masks = combine_masks(predicts)
+    else:
+        masks = {}
 
     return predicts_raw, masks
 
@@ -290,7 +293,10 @@ def biomedparse_inference_postprocessing_class_prob(pred_mask_prob, classificati
 
     predicts_raw = predicts.copy()
     predicts = non_maxima_suppression(predicts, class_prob)
-    masks = combine_masks(predicts)
+    if predicts:
+        masks = combine_masks(predicts)
+    else:
+        masks = {}
 
     return predicts_raw, masks
 
