@@ -221,7 +221,7 @@ class DefaultTrainer(UtilsTrainer, DistributedTrainer):
                      ft_params.append(f"sem_seg_head.{name}")
 
             # peft_config = LoraConfig(inference_mode=False, r=64, lora_alpha=128, lora_dropout=0.2, target_modules=lora_modules)
-            peft_config = LoraConfig(inference_mode=False, r=256, lora_alpha=512, lora_dropout=0.2, target_modules=lora_modules)
+            peft_config = LoraConfig(inference_mode=False, r=256, lora_alpha=512, lora_dropout=0.1, target_modules=lora_modules)
 
             # peft_config = LoraConfig(inference_mode=False, r=256, lora_alpha=512, lora_dropout=0.1, target_modules=lora_modules)
             self.raw_models[module_name] = get_peft_model(self.raw_models[module_name], peft_config)
